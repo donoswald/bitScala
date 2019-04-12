@@ -91,7 +91,7 @@ class Point(_x: Option[Element], _y: Option[Element], _a: Element, _b: Element) 
     throw new IllegalStateException("should not reach here")
   }
 
-  def *(coefficient: Int): Point = {
+  def *(coefficient: BigInt): Point = {
     var coef = coefficient
     var cur = this
     var result = new Point(None, None, this.a, this.b)

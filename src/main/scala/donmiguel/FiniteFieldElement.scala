@@ -1,7 +1,6 @@
 package donmiguel
 
 class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
-  type T = FiniteFieldElement
   require(_num >= 0, "num is negativ " + _num)
   require(_num < _prime, "num is < prime" + _num)
   require(_prime > 0, "prime is <= 0" + _prime)
@@ -38,11 +37,11 @@ class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
     new FiniteFieldElement((this.num * other.num) % prime, prime)
   }
 
-  override def *(cofficient: Int): Element = {
+  override def *(cofficient: BigInt): Element = {
     new FiniteFieldElement((this.num * cofficient) % this.prime, this.prime)
   }
 
-  override def **(exponent: Int): Element = {
+  override def **(exponent: BigInt): Element = {
     var n = exponent % (this.prime - 1)
     new FiniteFieldElement(this.num.modPow(n, this.prime), this.prime)
   }

@@ -8,7 +8,7 @@ trait Element {
   def +(that:Element):Element
   def -(that:Element):Element
   def *(that:Element):Element
-  def *(coefficient:Int):Element
-  def **(exponent:Int):Element
+  def *(coefficient:BigInt):Element
+  def **(exponent:BigInt):Element
   def /(that:Element):Element
 }

@@ -1,6 +1,6 @@
 package donmiguel
 
-class IntegerElement(var _x: Int) extends Element {
+class IntegerElement(var _x: BigInt) extends Element {
   require(_x != null)
   val x = _x
 
@@ -16,12 +16,13 @@ class IntegerElement(var _x: Int) extends Element {
     new IntegerElement(this.x * cast(that).x)
   }
 
-  override def *(coefficient: Int): Element = {
+  override def *(coefficient: BigInt): Element = {
     new IntegerElement(coefficient * this.x)
   }
 
-  override def **(exponent: Int): Element = {
-    new IntegerElement(Math.pow(this.x, exponent).toInt)
+  override def **(exponent: BigInt): Element = {
+    //Fixme must convert to Int for exponentiation!
+    new IntegerElement(this.x.pow(exponent.toInt))
   }
 
   override def /(that: Element): Element = {
