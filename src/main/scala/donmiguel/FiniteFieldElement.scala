@@ -1,6 +1,6 @@
 package donmiguel
 
-class FiniteFieldElement(_num: BigInt, _prime: BigInt)  extends Element {
+class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
   type T = FiniteFieldElement
   require(_num >= 0, "num is negativ " + _num)
   require(_num < _prime, "num is < prime" + _num)
@@ -9,44 +9,57 @@ class FiniteFieldElement(_num: BigInt, _prime: BigInt)  extends Element {
   val num: BigInt = _num
   val prime: BigInt = _prime
 
-  def ==(that: FiniteFieldElement) = this._prime == that.prime && this._num == that.num
 
-  def !=(that: FiniteFieldElement) = !(this == that)
-
-  def +(that: FiniteFieldElement): FiniteFieldElement = {
-    require(this.prime == that.prime, "primes don't match")
-    new FiniteFieldElement((this.num + that.num) % prime, prime)
+  override  def ==(that: Element) = {
+    var other = cast(that)
+    this._prime == other.prime && this._num == other.num
   }
 
-  def -(that: FiniteFieldElement): FiniteFieldElement = {
-    require(this.prime == that.prime, "primes don't match")
-    var num = this.num - that.num % prime
+
+  override  def +(that: Element): Element = {
+    var other = cast(that)
+    require(this.prime == other.prime, "primes don't match")
+    new FiniteFieldElement((this.num + other.num) % prime, prime)
+  }
+
+  override  def -(that: Element): Element = {
+    var other = cast(that)
+    require(this.prime == other.prime, "primes don't match")
+    var num = this.num - other.num % prime
     if (num < 0) {
       num += prime
     }
     new FiniteFieldElement(num, prime)
   }
 
-  def *(that: FiniteFieldElement): FiniteFieldElement = {
-    require(this.prime == that.prime, "primes don't match")
-    new FiniteFieldElement((this.num * that.num) % prime, prime)
+  override def *(that: Element): Element = {
+    var other = cast(that)
+    require(this.prime == other.prime, "primes don't match")
+    new FiniteFieldElement((this.num * other.num) % prime, prime)
   }
 
-  def *(cofficient: Int): FiniteFieldElement = {
+  override def *(cofficient: Int): Element = {
     new FiniteFieldElement((this.num * cofficient) % this.prime, this.prime)
   }
 
-  def **(exponent: Int): FiniteFieldElement = {
+  override def **(exponent: Int): Element = {
     var n = exponent % (this.prime - 1)
     new FiniteFieldElement(this.num.modPow(n, this.prime), this.prime)
   }
 
-  def /(that: FiniteFieldElement): FiniteFieldElement = {
-    require(this.prime == that.prime, "primes don't match")
+  override def /(that: Element): Element = {
+    var other = cast(that)
+    require(this.prime == other.prime, "primes don't match")
 
-    val num = this.num * that.num.modPow(prime - 2, prime) % prime
+    val num = this.num * other.num.modPow(prime - 2, prime) % prime
     new FiniteFieldElement(num, prime)
   }
+
+  private def cast(element: Element): FiniteFieldElement = {
+    require(element.isInstanceOf[FiniteFieldElement])
+    return element.asInstanceOf[FiniteFieldElement]
+  }
+
 
 
   override def toString: String = s"prime: $prime, num: $num"

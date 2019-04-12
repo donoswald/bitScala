@@ -1,13 +1,15 @@
 package donmiguel
 
-class Point(_x: Option[BigInt], _y: Option[BigInt], _a: Int, _b: Int) {
+class Point(_x: Option[Element], _y: Option[Element], _a: Element, _b: Element) {
   require(_x != null)
   require(_y != null)
+
   if (_x != None && _y != None) {
-    assert(_y.get.pow(2) == _x.get.pow(3) + _a * _x.get + _b, "the point is not on the curve")
+    assert(_y.get ** 2 == _x.get ** 3 + _a * _x.get + _b, "the point is not on the curve")
   } else {
     require(_x == None && _y == None, "either x and y must be None")
   }
+
   val x = _x
   val y = _y
   val a = _a
@@ -15,7 +17,19 @@ class Point(_x: Option[BigInt], _y: Option[BigInt], _a: Int, _b: Int) {
 
 
   def ==(that: Point): Boolean = {
-    this.x == that.x && this.y == that.y && this._a == that.a && this.b == that.b
+
+    //Fixme this.x.getOrElse(None) didn't work!!!
+    if (this.x == None && this.y == None) {
+      return this.x == that.x &&
+        this.y == that.y &&
+        this.a == that.a &&
+        this.b == that.b
+    }
+
+    this.x.get == that.x.get &&
+      this.y.get == that.y.get &&
+      this._a == that.a &&
+      this.b == that.b
   }
 
   def !=(that: Point): Boolean = {
@@ -36,7 +50,7 @@ class Point(_x: Option[BigInt], _y: Option[BigInt], _a: Int, _b: Int) {
 
     //Case 1: self.x == other.x, self.y != other.y
     //Result is point at infinity
-    if (this.x == that.x && this.y != that.y) {
+    if (this.x.get == that.x.get && this.y.get != that.y.get) {
       return new Point(None, None, this.a, this.b)
     }
     //Case 2: self.x != other.x
@@ -44,10 +58,10 @@ class Point(_x: Option[BigInt], _y: Option[BigInt], _a: Int, _b: Int) {
     //s=(y2-y1)/(x2-x1)
     //x3=s**2-x1-x2
     //y3=s*(x1-x3)-y1
-    if (this.x != that.x) {
+    if (this.x.get != that.x.get) {
 
       var s = (that.y.get - this.y.get) / (that.x.get - this.x.get)
-      var x = s.pow(2) - this.x.get - that.x.get
+      var x = s ** 2 - this.x.get - that.x.get
       var y = s * (this.x.get - x) - this.y.get
 
       Option.apply(x)
@@ -58,7 +72,8 @@ class Point(_x: Option[BigInt], _y: Option[BigInt], _a: Int, _b: Int) {
     //we return the point at infinity
     //note instead of figuring out what 0 is for each type
     //we just use 0 * self.x
-    if (this == that && this.y.get == 0 * this.x.get) {
+
+    if (this == that && this.y.get == this.x.get * 0) {
       return new Point(None, None, this.a, this.b)
     }
 
@@ -68,8 +83,8 @@ class Point(_x: Option[BigInt], _y: Option[BigInt], _a: Int, _b: Int) {
     //x3=s**2-2*x1
     //y3=s*(x1-x3)-y1
     if (this == that) {
-      var s = (3 * this.x.get.pow(2) + this.a) / (2 * this.y.get)
-      var x = s.pow(2) - 2 * this.x.get
+      var s = ((this.x.get ** 2) * 3 + this.a) / (this.y.get * 2)
+      var x = s ** 2 - this.x.get * 2
       var y = s * (this.x.get - x) - this.y.get
       return new Point(Some(x), Some(y), this.a, this.b)
     }
