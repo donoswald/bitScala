@@ -125,22 +125,57 @@ class PointSpec extends UnitSpec {
     arr(5)(2) = 71
     arr(5)(3) = -1
     arr(5)(4) = -1
-   for(row <- arr){
-     var s =  row(0)
-     var x1  = new FiniteFieldElement(row(1),prime)
-     var y1 = new FiniteFieldElement(row(2),prime)
-     var p1  =new Point(Some(x1),Some(y1),a,b)
+    for (row <- arr) {
+      var s = row(0)
+      var x1 = new FiniteFieldElement(row(1), prime)
+      var y1 = new FiniteFieldElement(row(2), prime)
+      var p1 = new Point(Some(x1), Some(y1), a, b)
 
-     var p2:Point =null
-     if(row(3) == -1){
-       p2 = new Point(None,None,a,b)
-     }else{
-       var x2 = new FiniteFieldElement(row(3),prime)
-       var y2 = new FiniteFieldElement(row(4),prime)
-       p2 = new Point(Some(x2),Some(y2),a,b)
-     }
-     assert(p1*s==p2)
-   }
+      var p2: Point = null
+      if (row(3) == -1) {
+        p2 = new Point(None, None, a, b)
+      } else {
+        var x2 = new FiniteFieldElement(row(3), prime)
+        var y2 = new FiniteFieldElement(row(4), prime)
+        p2 = new Point(Some(x2), Some(y2), a, b)
+      }
+      assert(p1 * s == p2)
+    }
+  }
+
+//  it should "verify" in {
+//    val point = new S256Point(
+//      new S256Element(BigInt.apply("887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c", 16)),
+//      new S256Element(BigInt.apply("61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34", 16)))
+//
+//    val sig = new Signature(BigInt.apply("ac8d1c87e51d0d441be8b3dd5b05c8795b48875dffe00b7ffcfac23010d3a395", 16),
+//      BigInt.apply("68342ceff8935ededd102dd876ffd6ba72d6a427a3edb13d26eb0781cb423c4", 16))
+//
+//    val z = BigInt.apply("ec208baa0fc1c19f708a9ca96fdeff3ac3f230bb4a7ba4aede4942ad003c0f60", 16).toByteArray
+//
+//    println(point.verify(z, sig))
+//  }
+
+
+
+
+  it should "serialize in sec format" in {
+    var coefficient = BigInt.apply(999).pow(3)
+    var point: S256Point = Secp256k1.G * coefficient
+    assert(HexBytesUtil.bytes2hex(point.sec(true)) == "039d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d5")
+    assert(HexBytesUtil.bytes2hex(point.sec(false)) == "049d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d56fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9")
+
+    coefficient = BigInt.apply(123)
+    point = Secp256k1.G * coefficient
+    assert(HexBytesUtil.bytes2hex(point.sec(true)) == "03a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5")
+    assert(HexBytesUtil.bytes2hex(point.sec(false)) == "04a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5204b5d6f84822c307e4b4a7140737aec23fc63b65b35f86a10026dbd2d864e6b")
+
+
+    coefficient = BigInt.apply(42424242)
+    point = Secp256k1.G * coefficient
+    assert(HexBytesUtil.bytes2hex(point.sec(true)) == "03aee2e7d843f7430097859e2bc603abcc3274ff8169c1a469fee0f20614066f8e")
+    assert(HexBytesUtil.bytes2hex(point.sec(false)) == "04aee2e7d843f7430097859e2bc603abcc3274ff8169c1a469fee0f20614066f8e21ec53f40efac47ac1c5211b2123527e0e9b57ede790c4da1e72c91fb7da54a3")
+
   }
 
 }
