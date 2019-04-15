@@ -3,8 +3,8 @@ package donmiguel
 class PointSpec extends UnitSpec {
 
   it should "assert equality" in {
-    var a = new Point(Some(int(3)), Some(int(-7)), int(5), int(7))
-    var b = new Point(Some(int(18)), Some(int(77)), int(5), int(7))
+    var a = new Point(int(3), int(-7), int(5), int(7))
+    var b = new Point(int(18), int(77), int(5), int(7))
     assertResult(true) {
       a != b
     }
@@ -15,31 +15,35 @@ class PointSpec extends UnitSpec {
 
   it should "check if on curve" in {
     a[AssertionError] should be thrownBy {
-      new Point(Some(int(-2)), Some(int(4)), int(5), int(7))
+      new Point(int(-2), int(4), int(5), int(7))
     }
-    new Point(Some(int(3)), Some(int(-7)), int(5), int(7))
-    new Point(Some(int(18)), Some(int(77)), int(5), int(7))
+    new Point(int(3), int(-7), int(5), int(7))
+    new Point(int(18), int(77), int(5), int(7))
+  }
+
+  it should "compare infinity" in {
+    assert(new Point(ElementNone, ElementNone, int(5), int(7)) == new Point(ElementNone, ElementNone, int(5), int(7)))
   }
 
   it should "support addition 1" in {
-    var a = new Point(None, None, int(5), int(7))
-    var b = new Point(Some(int(2)), Some(int(5)), int(5), int(7))
-    var c = new Point(Some(int(2)), Some(int(-5)), int(5), int(7))
+    var a = new Point(ElementNone, ElementNone, int(5), int(7))
+    var b = new Point(int(2), int(5), int(5), int(7))
+    var c = new Point(int(2), int(-5), int(5), int(7))
     assert(a + b == b)
     assert(b + a == b)
     assert(b + c == a)
   }
 
   it should "support addition 2" in {
-    var a = new Point(Some(int(3)), Some(int(7)), int(5), int(7))
-    var b = new Point(Some(int(-1)), Some(int(-1)), int(5), int(7))
-    assert(a + b == new Point(Some(int(2)), Some(int(-5)), int(5), int(7)))
+    var a = new Point(int(3), int(7), int(5), int(7))
+    var b = new Point(int(-1), int(-1), int(5), int(7))
+    assert(a + b == new Point(int(2), int(-5), int(5), int(7)))
 
   }
 
   it should "support addition 3" in {
-    var a = new Point(Some(int(-1)), Some(int(1)), int(5), int(7))
-    assert(a + a == new Point(Some(int(18)), Some(int(-77)), int(5), int(7)))
+    var a = new Point(int(-1), int(1), int(5), int(7))
+    assert(a + a == new Point(int(18), int(-77), int(5), int(7)))
   }
 
   private def int(x: Int): IntegerElement = {
@@ -75,13 +79,13 @@ class PointSpec extends UnitSpec {
     for (row <- arr) {
       var x1 = new FiniteFieldElement(row(0), prime)
       var y1 = new FiniteFieldElement(row(1), prime)
-      var p1 = new Point(Some(x1), Some(y1), a, b)
+      var p1 = new Point(x1, y1, a, b)
       var x2 = new FiniteFieldElement(row(2), prime)
       var y2 = new FiniteFieldElement(row(3), prime)
-      var p2 = new Point(Some(x2), Some(y2), a, b)
+      var p2 = new Point(x2, y2, a, b)
       var x3 = new FiniteFieldElement(row(4), prime)
       var y3 = new FiniteFieldElement(row(5), prime)
-      var p3 = new Point(Some(x3), Some(y3), a, b)
+      var p3 = new Point(x3, y3, a, b)
 
       assert(p1 + p2 == p3)
     }
@@ -129,34 +133,32 @@ class PointSpec extends UnitSpec {
       var s = row(0)
       var x1 = new FiniteFieldElement(row(1), prime)
       var y1 = new FiniteFieldElement(row(2), prime)
-      var p1 = new Point(Some(x1), Some(y1), a, b)
+      var p1 = new Point(x1, y1, a, b)
 
       var p2: Point = null
       if (row(3) == -1) {
-        p2 = new Point(None, None, a, b)
+        p2 = new Point(ElementNone, ElementNone, a, b)
       } else {
         var x2 = new FiniteFieldElement(row(3), prime)
         var y2 = new FiniteFieldElement(row(4), prime)
-        p2 = new Point(Some(x2), Some(y2), a, b)
+        p2 = new Point(x2, y2, a, b)
       }
       assert(p1 * s == p2)
     }
   }
 
-//  it should "verify" in {
-//    val point = new S256Point(
-//      new S256Element(BigInt.apply("887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c", 16)),
-//      new S256Element(BigInt.apply("61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34", 16)))
-//
-//    val sig = new Signature(BigInt.apply("ac8d1c87e51d0d441be8b3dd5b05c8795b48875dffe00b7ffcfac23010d3a395", 16),
-//      BigInt.apply("68342ceff8935ededd102dd876ffd6ba72d6a427a3edb13d26eb0781cb423c4", 16))
-//
-//    val z = BigInt.apply("ec208baa0fc1c19f708a9ca96fdeff3ac3f230bb4a7ba4aede4942ad003c0f60", 16).toByteArray
-//
-//    println(point.verify(z, sig))
-//  }
-
-
+  //  it should "verify" in {
+  //    val point = new S256Point(
+  //      new S256Element(BigInt.apply("887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c", 16)),
+  //      new S256Element(BigInt.apply("61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34", 16)))
+  //
+  //    val sig = new Signature(BigInt.apply("ac8d1c87e51d0d441be8b3dd5b05c8795b48875dffe00b7ffcfac23010d3a395", 16),
+  //      BigInt.apply("68342ceff8935ededd102dd876ffd6ba72d6a427a3edb13d26eb0781cb423c4", 16))
+  //
+  //    val z = BigInt.apply("ec208baa0fc1c19f708a9ca96fdeff3ac3f230bb4a7ba4aede4942ad003c0f60", 16).toByteArray
+  //
+  //    println(point.verify(z, sig))
+  //  }
 
 
   it should "serialize in sec format" in {

@@ -1,7 +1,5 @@
 package donmiguel
 
-import donmiguel.FiniteFieldElement
-
 class FiniteFieldElementSpec extends UnitSpec {
 
 
@@ -12,12 +10,17 @@ class FiniteFieldElementSpec extends UnitSpec {
     assertResult(true) {
       a == b
     }
-    assertResult(true) {
-      a != c
-    }
     assertResult(false) {
-      a != b
+      a == c
     }
+
+  }
+  it should "support inequality" in {
+    var a = new FiniteFieldElement(2, 31)
+    var b = new FiniteFieldElement(2, 31)
+    var c = new FiniteFieldElement(15, 31)
+    assert(a != c == true)
+    assert(a != b == false)
 
   }
 
@@ -78,7 +81,7 @@ class FiniteFieldElementSpec extends UnitSpec {
     for (pair <- invalidPoints) {
       var x = new FiniteFieldElement(pair(0), prime)
       var y = new FiniteFieldElement(pair(1), prime)
-      assertResult(false)  {
+      assertResult(false) {
         y ** 2 == x ** 3 + a * x + b
       }
     }

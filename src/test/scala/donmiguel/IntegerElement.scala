@@ -26,17 +26,22 @@ class IntegerElement(var _x: BigInt) extends Element {
   }
 
   override def /(that: Element): Element = {
-      new IntegerElement(this.x / cast(that).x)
+    new IntegerElement(this.x / cast(that).x)
   }
-
-  override def ==(that: Element) = {
-    this.x == cast(that).x
-  }
-
-  override def toString: String = s"x: $x"
 
   private def cast(element: Element): IntegerElement = {
     require(element.isInstanceOf[IntegerElement])
     return element.asInstanceOf[IntegerElement]
   }
+
+  def ==(that: Element): Boolean = {
+    if (null == that) {
+      return false
+    } else if (that == ElementNone) {
+      return false
+    }
+    this.x == cast(that).x
+  }
+
+  override def toString: String = s"x: $x"
 }

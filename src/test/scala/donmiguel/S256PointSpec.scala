@@ -1,12 +1,10 @@
 package donmiguel
 
-class S256Spec extends UnitSpec {
+class S256PointSpec extends UnitSpec {
 
   it should "check if N*G is infinity" in {
-
-    //TODO fix it
-    //var point = Secp256k1.G * Secp256k1.N
-    //assert(point.x == None && point.y == None)
+    var point = Secp256k1.G * Secp256k1.N
+    assert(point.x == ElementNone && point.y == ElementNone)
   }
 
   it should "test secrets and public points" in {

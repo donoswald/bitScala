@@ -9,19 +9,24 @@ class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
   val prime: BigInt = _prime
 
 
-  override  def ==(that: Element) = {
+  override def ==(that: Element): Boolean = {
+    if (null == that) {
+      return false
+    } else if (that == ElementNone) {
+      return false
+    }
     var other = cast(that)
     this._prime == other.prime && this._num == other.num
   }
 
 
-  override  def +(that: Element): Element = {
+  override def +(that: Element): Element = {
     var other = cast(that)
     require(this.prime == other.prime, "primes don't match")
     new FiniteFieldElement((this.num + other.num) % prime, prime)
   }
 
-  override  def -(that: Element): Element = {
+  override def -(that: Element): Element = {
     var other = cast(that)
     require(this.prime == other.prime, "primes don't match")
     var num = this.num - other.num % prime
@@ -29,6 +34,11 @@ class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
       num += prime
     }
     new FiniteFieldElement(num, prime)
+  }
+
+  private def cast(element: Element): FiniteFieldElement = {
+    require(element.isInstanceOf[FiniteFieldElement])
+    return element.asInstanceOf[FiniteFieldElement]
   }
 
   override def *(that: Element): Element = {
@@ -53,13 +63,6 @@ class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
     val num = this.num * other.num.modPow(prime - 2, prime) % prime
     new FiniteFieldElement(num, prime)
   }
-
-  private def cast(element: Element): FiniteFieldElement = {
-    require(element.isInstanceOf[FiniteFieldElement])
-    return element.asInstanceOf[FiniteFieldElement]
-  }
-
-
 
   override def toString: String = s"prime: $prime, num: $num"
 }
