@@ -1,6 +1,7 @@
 package donmiguel
 
 trait Element {
+
   def ==(that: Element): Boolean
 
   def !=(that: Element): Boolean = {

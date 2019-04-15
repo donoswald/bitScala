@@ -5,8 +5,8 @@ class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
   require(_num < _prime, "num is < prime" + _num)
   require(_prime > 0, "prime is <= 0" + _prime)
 
-  val num: BigInt = _num
-  val prime: BigInt = _prime
+  val num: BigInt = BigInt.apply(1,_num.toByteArray)
+  val prime: BigInt = BigInt.apply(1,_prime.toByteArray)
 
 
   override def ==(that: Element): Boolean = {

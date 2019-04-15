@@ -96,7 +96,7 @@ class Point(_x: Element, _y: Element, _a: Element, _b: Element) {
     throw new IllegalStateException("should not reach here")
   }
 
-  override def toString: String = StringBuilder.newBuilder + "x: " + x + " ,y: " + y + " ,a: " + a + " ,b: " + b
+  override def toString: String = StringBuilder.newBuilder + "x: " + x + "\ny: " + y + "\na: " + a + "\nb: " + b
 
 
 }

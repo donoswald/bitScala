@@ -7,6 +7,26 @@ class S256PointSpec extends UnitSpec {
     assert(point.x == ElementNone && point.y == ElementNone)
   }
 
+  it should "serialize in sec format" in {
+    var coefficient = BigInt.apply(999).pow(3)
+    var point: S256Point = Secp256k1.G * coefficient
+    assert(HexBytesUtil.bytes2hex(point.sec(true)) == "039d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d5")
+    assert(HexBytesUtil.bytes2hex(point.sec(false)) == "049d5ca49670cbe4c3bfa84c96a8c87df086c6ea6a24ba6b809c9de234496808d56fa15cc7f3d38cda98dee2419f415b7513dde1301f8643cd9245aea7f3f911f9")
+
+    coefficient = BigInt.apply(123)
+    point = Secp256k1.G * coefficient
+    assert(HexBytesUtil.bytes2hex(point.sec(true)) == "03a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5")
+    assert(HexBytesUtil.bytes2hex(point.sec(false)) == "04a598a8030da6d86c6bc7f2f5144ea549d28211ea58faa70ebf4c1e665c1fe9b5204b5d6f84822c307e4b4a7140737aec23fc63b65b35f86a10026dbd2d864e6b")
+
+
+    coefficient = BigInt.apply(42424242)
+    point = Secp256k1.G * coefficient
+    assert(HexBytesUtil.bytes2hex(point.sec(true)) == "03aee2e7d843f7430097859e2bc603abcc3274ff8169c1a469fee0f20614066f8e")
+    assert(HexBytesUtil.bytes2hex(point.sec(false)) == "04aee2e7d843f7430097859e2bc603abcc3274ff8169c1a469fee0f20614066f8e21ec53f40efac47ac1c5211b2123527e0e9b57ede790c4da1e72c91fb7da54a3")
+
+  }
+
+
   it should "test secrets and public points" in {
     var points = Array.ofDim[BigInt](4, 3)
     points(0)(0) = 7
@@ -28,6 +48,16 @@ class S256PointSpec extends UnitSpec {
       assert(Secp256k1.G * s == point)
     }
 
+
+  }
+
+  it should "parse " in{
+    var coefficient = BigInt.apply(999).pow(3)
+    var point: S256Point = Secp256k1.G * coefficient
+    var arr = point.sec(false)
+    assert(S256Point.parse(arr)==point)
+    arr  = point.sec(true)
+    assert(S256Point.parse(arr)==point)
 
   }
 }
