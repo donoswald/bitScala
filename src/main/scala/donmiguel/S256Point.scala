@@ -54,6 +54,17 @@ class S256Point(_x: Element, _y: Element) extends Point(_x, _y, new S256Element(
     }
 
   }
+  def address(compressed:Boolean=true,testnet:Boolean=true):String ={
+
+   val hash= CryptoUtil.hash160(sec(compressed))
+   var  prefix:BigInt =0
+    if(testnet){
+      prefix=0x6f
+    }else{
+      prefix=0x00
+    }
+    return CryptoUtil.checksumBase58(Array.concat(prefix.toByteArray,hash))
+  }
 }
 
 object S256Point {
@@ -104,5 +115,4 @@ object S256Point {
       }
     }
   }
-
 }
