@@ -1,6 +1,5 @@
 package donmiguel
 
-
 import java.math.BigInteger
 
 import org.bouncycastle.crypto.digests.{GeneralDigest, RIPEMD160Digest, SHA256Digest}

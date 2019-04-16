@@ -64,16 +64,16 @@ class S256PointSpec extends UnitSpec {
   it should "generate address" in {
 
     var arr = Array(
-      (BigInt.apply(888).pow(3), "148dY81A9BmdpMhvYEVznrM45kWN32vSCN", "mieaqB68xDCtbUBYFoUNcmZNwk74xcBfTP",true),
-      (BigInt.apply(321), "1S6g2xBJSED7Qr9CYZib5f4PYVhHZiVfj", "mfx3y63A7TfTtXKkv7Y6QzsPFY6QCBCXiP",false),
-      (BigInt.apply("4242424242"), "1226JSptcStqn4Yq9aAmNXdwdc2ixuH9nb", "mgY3bVusRUL6ZB2Ss999CSrGVbdRwVpM8s",false))
+      (BigInt.apply(888).pow(3), "148dY81A9BmdpMhvYEVznrM45kWN32vSCN", "mieaqB68xDCtbUBYFoUNcmZNwk74xcBfTP", true),
+      (BigInt.apply(321), "1S6g2xBJSED7Qr9CYZib5f4PYVhHZiVfj", "mfx3y63A7TfTtXKkv7Y6QzsPFY6QCBCXiP", false),
+      (BigInt.apply("4242424242"), "1226JSptcStqn4Yq9aAmNXdwdc2ixuH9nb", "mgY3bVusRUL6ZB2Ss999CSrGVbdRwVpM8s", false))
 
     for (row <- arr) {
 
       var point = Secp256k1.G * row._1.asInstanceOf[BigInt]
 
-      assert(point.address(row._4.asInstanceOf[Boolean], false)==row._2)
-      assert(point.address(row._4.asInstanceOf[Boolean], true)==row._3)
+      assert(point.address(row._4.asInstanceOf[Boolean], false) == row._2)
+      assert(point.address(row._4.asInstanceOf[Boolean], true) == row._3)
 
     }
   }

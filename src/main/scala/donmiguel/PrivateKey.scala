@@ -6,7 +6,6 @@ import org.bouncycastle.crypto.signers.{ECDSASigner, HMacDSAKCalculator}
 
 class PrivateKey(val _privKey: BigInt) {
 
-
   val privKey = _privKey.bigInteger
 
   def sign(message: String): Signature = {
@@ -19,6 +18,5 @@ class PrivateKey(val _privKey: BigInt) {
     val sigs = signer.generateSignature(hash)
     new Signature(BigInt.apply(sigs(0)), BigInt.apply(sigs(1)))
   }
-
 
 }
