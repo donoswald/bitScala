@@ -57,6 +57,7 @@ class S256Point(_x: Element, _y: Element) extends Point(_x, _y, new S256Element(
   def address(compressed:Boolean=true,testnet:Boolean=true):String ={
 
    val hash= CryptoUtil.hash160(sec(compressed))
+    //FIXME should be possible with an Int or an unsigned Byte
    var  prefix:BigInt  = null
     if(testnet){
       prefix=0x6f
