@@ -1,6 +1,6 @@
 package donmiguel
 
-class S256Element(_num: BigInt) extends FiniteFieldElement(_num, Secp256k1.P) {
+class S256Element(num: BigInt) extends FiniteFieldElement(num, Secp256k1.P) {
 
   def sqrt(): S256Element = {
     return (this ** ((Secp256k1.P + 1) / 4))

@@ -26,7 +26,9 @@ class PrivateKey(val privKey: BigInt) {
       i = i + 1
     }
 
-    if (secret.length > 32) {
+    if(secret.length-i > 32) throw new RuntimeException("key too large")
+
+    if (i > 0) {
       var end = if (secret.length > i + 32) i + 32 else secret.length
       secret = secret.slice(i, end)
     } else if (secret.length < 32) {

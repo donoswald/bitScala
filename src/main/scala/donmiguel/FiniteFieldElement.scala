@@ -1,12 +1,9 @@
 package donmiguel
 
-class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
-  require(_num >= 0, "num is negativ " + _num)
-  require(_num < _prime, "num is < prime" + _num)
-  require(_prime > 0, "prime is <= 0" + _prime)
-
-  val num: BigInt = BigInt.apply(1,_num.toByteArray)
-  val prime: BigInt = BigInt.apply(1,_prime.toByteArray)
+class FiniteFieldElement(val num: BigInt, val prime: BigInt) extends Element {
+  require(num >= 0, "num is negativ " + num)
+  require(num < prime, "num is < prime" + num)
+  require(prime > 0, "prime is <= 0" + prime)
 
 
   override def ==(that: Element): Boolean = {
@@ -16,7 +13,7 @@ class FiniteFieldElement(_num: BigInt, _prime: BigInt) extends Element {
       return false
     }
     var other = cast(that)
-    this._prime == other.prime && this._num == other.num
+    this.prime == other.prime && this.num == other.num
   }
 
 

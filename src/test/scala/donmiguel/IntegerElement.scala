@@ -1,8 +1,6 @@
 package donmiguel
 
-class IntegerElement(var _x: BigInt) extends Element {
-  require(_x != null)
-  val x = _x
+class IntegerElement(var x: BigInt) extends Element {
 
   override def +(that: Element): Element = {
     new IntegerElement(this.x + cast(that).x)

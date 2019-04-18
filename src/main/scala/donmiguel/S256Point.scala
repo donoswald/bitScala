@@ -4,7 +4,7 @@ import org.bouncycastle.crypto.params.ECPublicKeyParameters
 import org.bouncycastle.crypto.signers.ECDSASigner
 import org.bouncycastle.util.BigIntegers
 
-class S256Point(_x: Element, _y: Element) extends Point(_x, _y, new S256Element(Secp256k1.A), new S256Element(Secp256k1.B)) {
+class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp256k1.A), new S256Element(Secp256k1.B)) {
 
   override def +(that: Point): S256Point = new S256Point((super.+(that)))
 

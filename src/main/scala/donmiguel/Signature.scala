@@ -3,9 +3,7 @@ package donmiguel
 import org.bouncycastle.util.BigIntegers
 
 
-case class Signature(_r: BigInt, _s: BigInt) {
-  val r = _r
-  val s = _s
+case class Signature(r: BigInt, s: BigInt) {
 
   override def toString: String = s"s = $s\nr = $r"
 

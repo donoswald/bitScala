@@ -1,19 +1,15 @@
 package donmiguel
 
-class Point(_x: Element, _y: Element, _a: Element, _b: Element) {
-  require(_x != null)
-  require(_y != null)
+class Point(val x:Element,val y: Element,val a: Element,val b: Element) {
+  require(x != null)
+  require(y != null)
 
-  if (_x != ElementNone && _y != ElementNone) {
-    assert(_y ** 2 == _x ** 3 + _a * _x + _b, "the point is not on the curve")
+  if (x != ElementNone && y != ElementNone) {
+    assert(y ** 2 == x ** 3 + a * x + b, "the point is not on the curve")
   } else {
-    require(_x == ElementNone && _y == ElementNone, "either x and y must be None")
+    require(x == ElementNone && y == ElementNone, "either x and y must be None")
   }
 
-  val x = _x
-  val y = _y
-  val a = _a
-  val b = _b
 
   def !=(that: Point): Boolean = {
     !(this == that)
