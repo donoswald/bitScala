@@ -10,7 +10,7 @@ object Tx {
 
   var it=  in.iterator
 
-    var version = LeConverter.readIntLE(it,4,0)
+    var version = LeConverter.readLongLE(it,4,0).asInstanceOf[Int]
 
 
 

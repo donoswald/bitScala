@@ -12,19 +12,19 @@ object VarInt {
       var buf = new Array[Byte](3)
       buf(0)=first.asInstanceOf[Byte]
       it.copyToArray(buf,1,2)
-      value = LeConverter.readUint16LE(buf, 1)
+      value = LeConverter.readLongLE(buf, 1)
     }
     else if (first == 254) {
       var buf = new Array[Byte](5)
       buf(0)=first.asInstanceOf[Byte]
       it.copyToArray(buf,1,4)
-      value = LeConverter.readUint32LE(buf, 1)
+      value = LeConverter.readLongLE(buf, 1)
     }
     else{
       var buf = new Array[Byte](9)
       buf(0)=first.asInstanceOf[Byte]
       it.copyToArray(buf,1,8)
-      value = LeConverter.readInt64LE(buf, 1)
+      value = LeConverter.readLongLE(buf, 1)
     }
     value
   }
@@ -37,17 +37,17 @@ object VarInt {
       case 3 =>
         bytes = new Array[Byte](3)
         bytes(0) = 253.toByte
-        LeConverter. uint16ToByteArrayLE(value.toInt, bytes, 1)
+        LeConverter. writLong(value.toLong, bytes, 1)
         bytes
       case 5 =>
         bytes = new Array[Byte](5)
         bytes(0) = 254.toByte
-        LeConverter.uint32ToByteArrayLE(value.toLong, bytes, 1)
+        LeConverter.writLong(value.toLong, bytes, 1)
         bytes
       case _ =>
         bytes = new Array[Byte](9)
         bytes(0) = 255.toByte
-        LeConverter.int64ToByteArrayLE(value.toLong, bytes, 1)
+        LeConverter.writLong(value.toLong, bytes, 1)
         bytes
     }
   }
