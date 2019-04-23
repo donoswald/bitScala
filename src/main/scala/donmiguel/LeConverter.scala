@@ -3,22 +3,22 @@ package donmiguel
 object LeConverter {
 
 
-  def readIntLE(it:Iterator[Byte],length:Int,offset:Int):Int = {
+  def readIntLE(it: Iterator[Byte], length: Int, offset: Int): Int = {
     var bytes = new Array[Byte](length)
-    it.copyToArray(bytes,offset,length)
+    it.copyToArray(bytes, offset, length)
     BigInt.apply(bytes.reverse).toInt
 
   }
-  def readByteArrayLE(it:Iterator[Byte],length:Int,offset:Int):Array[Byte] = {
+
+  def readByteArrayLE(it: Iterator[Byte], length: Int, offset: Int): Array[Byte] = {
     var bytes = new Array[Byte](length)
-    it.copyToArray(bytes,0,length)
+    it.copyToArray(bytes, 0, length)
     bytes.reverse
 
   }
 
 
-
-   def readInt64LE(bytes: Array[Byte], offset: Int): Long = {
+  def readInt64LE(bytes: Array[Byte], offset: Int): Long = {
     (bytes(offset) & 0xffl) |
       ((bytes(offset + 1) & 0xffl) << 8) |
       ((bytes(offset + 2) & 0xffl) << 16) |
@@ -29,12 +29,12 @@ object LeConverter {
       ((bytes(offset + 7) & 0xffl) << 56)
   }
 
-   def readUint16LE(bytes: Array[Byte], offset: Int): Int = {
-    (bytes(offset) & 0xff) |
-      ((bytes(offset + 1) & 0xff) << 8)
+  def readUint16LE(bytes: Array[Byte], offset: Int): Long = {
+    (bytes(offset) & 0xffl) |
+      ((bytes(offset + 1) & 0xffl) << 8)
   }
 
-   def readUint32LE(bytes: Array[Byte], offset: Int): Long = {
+  def readUint32LE(bytes: Array[Byte], offset: Int): Long = {
     (bytes(offset) & 0xffl) |
       ((bytes(offset + 1) & 0xffl) << 8) |
       ((bytes(offset + 2) & 0xffl) << 16) |
@@ -42,19 +42,19 @@ object LeConverter {
   }
 
 
-     def uint16ToByteArrayLE(value: Int, out: Array[Byte], offset: Int): Unit = {
+  def uint16ToByteArrayLE(value: Int, out: Array[Byte], offset: Int): Unit = {
     out(offset) = (0xFF & value).toByte
     out(offset + 1) = (0xFF & (value >> 8)).toByte
   }
 
-     def uint32ToByteArrayLE(value: Long, out: Array[Byte], offset: Int): Unit = {
+  def uint32ToByteArrayLE(value: Long, out: Array[Byte], offset: Int): Unit = {
     out(offset) = (0xFF & value).toByte
     out(offset + 1) = (0xFF & (value >> 8)).toByte
     out(offset + 2) = (0xFF & (value >> 16)).toByte
     out(offset + 3) = (0xFF & (value >> 24)).toByte
   }
 
-     def int64ToByteArrayLE(value: Long, out: Array[Byte], offset: Int): Unit = {
+  def int64ToByteArrayLE(value: Long, out: Array[Byte], offset: Int): Unit = {
     out(offset) = (0xFF & value).toByte
     out(offset + 1) = (0xFF & (value >> 8)).toByte
     out(offset + 2) = (0xFF & (value >> 16)).toByte

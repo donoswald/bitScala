@@ -1,6 +1,6 @@
 package donmiguel
 
-case class TxIn (prev_tx:Array[Byte],prev_idx:Int, script_sig:Array[Byte],sequence:Int) {
+case class TxIn (prev_tx:Array[Byte],prev_idx:Int, script_sig:Script,sequence:Int) {
 
 }
 object  TxIn  {
@@ -10,7 +10,9 @@ object  TxIn  {
     var tx_prev= LeConverter.readByteArrayLE(it,32,0)
     var prev_idx = VarInt.fromVarint(it)
 
-    new TxIn(tx_prev,prev_idx.intValue(),null,0)
+    var script = Script.parse(it)
+
+    new TxIn(tx_prev,prev_idx.intValue(),script,0)
 
   }
 }
