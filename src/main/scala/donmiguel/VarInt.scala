@@ -5,33 +5,27 @@ object VarInt {
   def fromVarint(it: Iterator[Byte]): Long = {
     val first = 0xFF & it.next()
     var value = 0L
-    if (first < 253) value = first
-    else if (first == 253) {
-      var buf = new Array[Byte](2)
-      it.copyToArray(buf,0,2)
+
+    if (first < 253) {
+      value = first
+    } else if (first == 253) {
+      var buf = new Array[Byte](3)
+      buf(0)=first.asInstanceOf[Byte]
+      it.copyToArray(buf,1,2)
       value = LeConverter.readUint16LE(buf, 1)
     }
     else if (first == 254) {
-      var buf = new Array[Byte](4)
-      it.copyToArray(buf,0,4)
+      var buf = new Array[Byte](5)
+      buf(0)=first.asInstanceOf[Byte]
+      it.copyToArray(buf,1,4)
       value = LeConverter.readUint32LE(buf, 1)
     }
     else{
-      var buf = new Array[Byte](8)
-      it.copyToArray(buf,0,8)
+      var buf = new Array[Byte](9)
+      buf(0)=first.asInstanceOf[Byte]
+      it.copyToArray(buf,1,8)
       value = LeConverter.readInt64LE(buf, 1)
     }
-    value
-  }
-
-
-  def fromVarint(buf: Array[Byte]):  Long = {
-    val first = 0xFF & buf(0)
-    var value = 0L
-    if (first < 253) value = first
-    else if (first == 253) value = LeConverter.readUint16LE(buf, 1)
-    else if (first == 254) value = LeConverter.readUint32LE(buf, 1)
-    else value = LeConverter.readInt64LE(buf, 1)
     value
   }
 
