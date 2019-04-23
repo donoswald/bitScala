@@ -4,9 +4,12 @@ object LeConverter {
 
 
   def readLongLE(it: Iterator[Byte], length: Int, offset: Int): Long = {
-    var bytes = new Array[Byte](length)
-    it.copyToArray(bytes, offset, length)
-    BigInt.apply(bytes.reverse).toInt
+
+    var result = 0L
+    for (i <- offset to   length -1 ) {
+      result |= (it.next() & 0xffl) << (i - offset) * 8
+    }
+    result
 
   }
   def readLongLE(bytes: Array[Byte], offset: Int): Long = {
