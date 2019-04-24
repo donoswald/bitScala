@@ -37,17 +37,17 @@ object VarInt {
       case 3 =>
         bytes = new Array[Byte](3)
         bytes(0) = 253.toByte
-        LeConverter. writLong(value.toLong, bytes, 1)
+        LeConverter. writeLE(value.toLong, bytes, 1)
         bytes
       case 5 =>
         bytes = new Array[Byte](5)
         bytes(0) = 254.toByte
-        LeConverter.writLong(value.toLong, bytes, 1)
+        LeConverter.writeLE(value.toLong, bytes, 1)
         bytes
       case _ =>
         bytes = new Array[Byte](9)
         bytes(0) = 255.toByte
-        LeConverter.writLong(value.toLong, bytes, 1)
+        LeConverter.writeLE(value.toLong, bytes, 1)
         bytes
     }
   }

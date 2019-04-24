@@ -27,9 +27,16 @@ object LeConverter {
 
   }
 
-  def writLong(value:Long, out:Array[Byte],offset:Int):Unit = {
+  def writeLE(value:Long, out:Array[Byte], offset:Int):Unit = {
     for(i<- offset to out.length-1){
       out(i)= (0xff & (value >> (i-offset)*8)).toByte
     }
+  }
+  def writeLE(value:Long, length: Int):Array[Byte] = {
+    var result = new Array[Byte](length)
+    for(i<- 0 to length-1){
+      result(i)= (0xff & (value >> (i)*8)).toByte
+    }
+    result
   }
 }
