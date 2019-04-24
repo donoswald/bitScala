@@ -1,6 +1,6 @@
 package donmiguel
 
-class IntegerElement(var x: BigInt) extends Element {
+case class IntegerElement(var x: BigInt) extends Element {
 
   override def +(that: Element): Element = {
     new IntegerElement(this.x + cast(that).x)

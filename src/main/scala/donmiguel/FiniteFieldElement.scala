@@ -1,20 +1,9 @@
 package donmiguel
 
-class FiniteFieldElement(val num: BigInt, val prime: BigInt) extends Element {
+case class FiniteFieldElement(val num: BigInt, val prime: BigInt) extends Element {
   require(num >= 0, "num is negativ " + num)
   require(num < prime, "num is < prime" + num)
   require(prime > 0, "prime is <= 0" + prime)
-
-
-  override def ==(that: Element): Boolean = {
-    if (null == that) {
-      return false
-    } else if (that == ElementNone) {
-      return false
-    }
-    var other = cast(that)
-    this.prime == other.prime && this.num == other.num
-  }
 
 
   override def +(that: Element): Element = {
