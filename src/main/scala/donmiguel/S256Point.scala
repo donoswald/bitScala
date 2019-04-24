@@ -28,6 +28,19 @@ class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp
     signer.verifySignature(hash, sig.r.bigInteger, sig.s.bigInteger)
   }
 
+  def address(compressed: Boolean = true, testnet: Boolean = true): String = {
+
+    val hash = CryptoUtil.hash160(sec(compressed))
+    //FIXME should be possible with an Int or an unsigned Byte
+    var prefix: BigInt = null
+    if (testnet) {
+      prefix = 0x6f
+    } else {
+      prefix = 0x00
+    }
+    return CryptoUtil.checksumBase58(Array.concat(prefix.toByteArray, hash))
+  }
+
   def sec(compressed: Boolean): Array[Byte] = {
     require(this.x != None && this.y != None)
     require(this.x.isInstanceOf[FiniteFieldElement])
@@ -53,18 +66,6 @@ class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp
       return Array.concat(first, xarr, yarr)
     }
 
-  }
-  def address(compressed:Boolean=true,testnet:Boolean=true):String ={
-
-   val hash= CryptoUtil.hash160(sec(compressed))
-    //FIXME should be possible with an Int or an unsigned Byte
-   var  prefix:BigInt  = null
-    if(testnet){
-      prefix=0x6f
-    }else{
-      prefix=0x00
-    }
-    return CryptoUtil.checksumBase58(Array.concat(prefix.toByteArray,hash))
   }
 }
 

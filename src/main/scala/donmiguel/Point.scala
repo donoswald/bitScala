@@ -1,6 +1,6 @@
 package donmiguel
 
-class Point(val x:Element,val y: Element,val a: Element,val b: Element) {
+class Point(val x: Element, val y: Element, val a: Element, val b: Element) {
   require(x != null)
   require(y != null)
 

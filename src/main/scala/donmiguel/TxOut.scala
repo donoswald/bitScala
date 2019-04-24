@@ -1,5 +1,5 @@
 package donmiguel
 
- class TxOut {
+class TxOut {
 
 }

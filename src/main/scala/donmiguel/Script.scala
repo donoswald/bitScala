@@ -2,7 +2,7 @@ package donmiguel
 
 import scala.collection.mutable.ListBuffer
 
-class Script(var cmds:List[Array[Byte]]) {
+class Script(var cmds: List[Array[Byte]]) {
 
 }
 
@@ -52,7 +52,7 @@ object Script {
       }
 
     }
-    require(count==length,"count==lenght")
+    require(count == length, "count==lenght")
 
     new Script(cmds.toList)
   }

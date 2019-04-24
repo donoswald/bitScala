@@ -12,7 +12,7 @@ class S256Element(num: BigInt) extends FiniteFieldElement(num, Secp256k1.P) {
   }
 
   override def +(that: Element): Element = {
-   var field= super.+(that).asInstanceOf[FiniteFieldElement]
+    var field = super.+(that).asInstanceOf[FiniteFieldElement]
     return new S256Element(field.num)
   }
 

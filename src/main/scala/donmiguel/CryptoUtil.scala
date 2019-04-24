@@ -10,11 +10,6 @@ object CryptoUtil {
   val alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
   val map = alphabet.zipWithIndex.toMap
 
-  def sha256(bytes: Array[Byte]): Array[Byte] = {
-    val digest = new SHA256Digest();
-    hash(digest, bytes)
-  }
-
   def hash160(bytes: Array[Byte]): Array[Byte] = {
     ripemd160(sha256(bytes))
   }
@@ -22,13 +17,6 @@ object CryptoUtil {
   def ripemd160(bytes: Array[Byte]): Array[Byte] = {
     val digest = new RIPEMD160Digest()
     hash(digest, bytes)
-  }
-
-  private def hash(digest: GeneralDigest, bytes: Array[Byte]): Array[Byte] = {
-    digest.update(bytes, 0, bytes.length)
-    val result = Array.ofDim[Byte](digest.getDigestSize)
-    digest.doFinal(result, 0)
-    result
   }
 
   def hexToBytes(hex: String): Array[Byte] = {
@@ -44,6 +32,18 @@ object CryptoUtil {
     val first4 = Array.ofDim[Byte](4)
     Array.copy(doubleHash, 0, first4, 0, 4)
     encodeBase58(Array.concat(input, first4))
+  }
+
+  def sha256(bytes: Array[Byte]): Array[Byte] = {
+    val digest = new SHA256Digest();
+    hash(digest, bytes)
+  }
+
+  private def hash(digest: GeneralDigest, bytes: Array[Byte]): Array[Byte] = {
+    digest.update(bytes, 0, bytes.length)
+    val result = Array.ofDim[Byte](digest.getDigestSize)
+    digest.doFinal(result, 0)
+    result
   }
 
   def encodeBase58(input: Array[Byte]): String = {
