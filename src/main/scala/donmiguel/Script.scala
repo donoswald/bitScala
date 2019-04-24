@@ -29,7 +29,7 @@ object Script {
 
       } else if (current_int == 76) {
 
-        var n = LeConverter.readLongLE(it, 2, 0).asInstanceOf[Int]
+        var n = LeConverter.readLongLE(it, 2).asInstanceOf[Int]
         var arr = new Array[Byte](n)
         it.copyToArray(arr, 0, n)
         cmds += arr
@@ -37,7 +37,7 @@ object Script {
 
       } else if (current_int == 77) {
 
-        var n = LeConverter.readLongLE(it, 4, 0).asInstanceOf[Int]
+        var n = LeConverter.readLongLE(it, 4).asInstanceOf[Int]
         var arr = new Array[Byte](n)
         it.copyToArray(arr, 0, n)
         cmds += arr

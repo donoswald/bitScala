@@ -5,7 +5,7 @@ class LeConverterSpec extends UnitSpec {
   it should "read le" in {
 
     var v = CryptoUtil.hexToBytes("01000000")
-    assert(LeConverter.readLongLE(v.iterator, 4, 0) == 1)
+    assert(LeConverter.readLongLE(v.iterator, 4) == 1)
 
 
   }
@@ -13,10 +13,10 @@ class LeConverterSpec extends UnitSpec {
   it should "read le 2" in {
     var v = CryptoUtil.hexToBytes("99c3980000000000")
 
-    assert(LeConverter.readLongLE(v.iterator, 8, 0) == 10011545)
+    assert(LeConverter.readLongLE(v.iterator, 8) == 10011545)
 
     v = CryptoUtil.hexToBytes("a135ef0100000000")
-    assert(LeConverter.readLongLE(v.iterator, 8, 0) == 32454049)
+    assert(LeConverter.readLongLE(v.iterator, 8) == 32454049)
 
   }
 

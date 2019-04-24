@@ -3,11 +3,11 @@ package donmiguel
 object LeConverter {
 
 
-  def readLongLE(it: Iterator[Byte], length: Int, offset: Int): Long = {
+  def readLongLE(it: Iterator[Byte], length: Int): Long = {
 
     var result = 0L
-    for (i <- offset to length - 1) {
-      result |= (it.next() & 0xffl) << (i - offset) * 8
+    for (i <- 0 to length - 1) {
+      result |= (it.next() & 0xffl) << i * 8
     }
     result
 
