@@ -99,7 +99,7 @@ object S256Point {
         var beta = alpha.sqrt()
 
         var even_beta: S256Element = null
-        var odd_beta: S256Element = null;
+        var odd_beta: S256Element = null
 
         if (beta.num % 2 == 0) {
           even_beta = beta
