@@ -14,13 +14,13 @@ object Tx {
 
     var num_in = VarInt.fromVarint(it)
     var ins = new Array[TxIn](num_in.toInt)
-    for (i <- 0 to num_in.toInt - 1) {
+    for (i <- 0 until  num_in.toInt ) {
       ins(i) = TxIn.parse(it)
     }
 
     var num_out = VarInt.fromVarint(it)
     var outs = new Array[TxOut](num_out.toInt)
-    for (i <- 0 to num_out.toInt - 1) {
+    for (i <- 0 until num_out.toInt ) {
       outs(i) = TxOut.parse(it)
     }
 

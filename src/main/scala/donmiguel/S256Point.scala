@@ -23,7 +23,7 @@ class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp
 
   def verify(hash: Array[Byte], sig: Signature): Boolean = {
     val signer = new ECDSASigner
-    val params = new ECPublicKeyParameters(Secp256k1.ecParams.getCurve().decodePoint(this.sec(false)), Secp256k1.ecParams)
+    val params = new ECPublicKeyParameters(Secp256k1.ecParams.getCurve.decodePoint(this.sec(false)), Secp256k1.ecParams)
     signer.init(false, params)
     signer.verifySignature(hash, sig.r.bigInteger, sig.s.bigInteger)
   }
@@ -42,7 +42,7 @@ class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp
   }
 
   def sec(compressed: Boolean): Array[Byte] = {
-    require(this.x != None && this.y != None)
+    require(this.x != ElementNone && this.y != ElementNone)
     require(this.x.isInstanceOf[FiniteFieldElement])
     require(this.y.isInstanceOf[FiniteFieldElement])
 

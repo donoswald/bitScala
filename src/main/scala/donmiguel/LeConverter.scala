@@ -6,7 +6,7 @@ object LeConverter {
   def readLongLE(it: Iterator[Byte], length: Int): Long = {
 
     var result = 0L
-    for (i <- 0 to length - 1) {
+    for (i <- 0 until length ) {
       result |= (it.next() & 0xffl) << i * 8
     }
     result
@@ -15,7 +15,7 @@ object LeConverter {
 
   def readLongLE(bytes: Array[Byte], offset: Int): Long = {
     var result = 0L
-    for (i <- offset to bytes.length - 1) {
+    for (i <- offset until bytes.length ) {
       result |= (bytes(i) & 0xffl) << (i - offset) * 8
     }
     result
@@ -29,15 +29,15 @@ object LeConverter {
   }
 
   def writeLE(value: Long, out: Array[Byte], offset: Int): Unit = {
-    for (i <- offset to out.length - 1) {
+    for (i <- offset until out.length ) {
       out(i) = (0xff & (value >> (i - offset) * 8)).toByte
     }
   }
 
   def writeLE(value: Long, length: Int): Array[Byte] = {
     var result = new Array[Byte](length)
-    for (i <- 0 to length - 1) {
-      result(i) = (0xff & (value >> (i) * 8)).toByte
+    for (i <- 0 until  length ) {
+      result(i) = (0xff & (value >> i * 8)).toByte
     }
     result
   }
