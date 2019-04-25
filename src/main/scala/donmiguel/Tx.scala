@@ -6,9 +6,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
 }
 
 object Tx {
-  def parse(in: Array[Byte]): Tx = {
-
-    var it = in.iterator
+  def parse(it: Iterator[Byte]): Tx = {
 
     var version = LeConverter.readLongLE(it, 4).asInstanceOf[Int]
 

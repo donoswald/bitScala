@@ -1,0 +1,140 @@
+package donmiguel
+
+object OpCode extends Enumeration {
+  val OP_0 = Value(0x00)
+  val OP_FALSE = OP_0
+  val OP_PUSHDATA1 = Value(0x4c)
+  val OP_PUSHDATA2 = Value(0x4d)
+  val OP_PUSHDATA4 = Value(0x4e)
+  val OP_1NEGATE = Value(0x4f)
+  val OP_RESERVED = Value(0x50)
+  val OP_1 = Value(0x51)
+  val OP_TRUE = OP_1
+  val OP_2 = Value(0x52)
+  val OP_3 = Value(0x53)
+  val OP_4 = Value(0x54)
+  val OP_5 = Value(0x55)
+  val OP_6 = Value(0x56)
+  val OP_7 = Value(0x57)
+  val OP_8 = Value(0x58)
+  val OP_9 = Value(0x59)
+  val OP_10 = Value(0x5a)
+  val OP_11 = Value(0x5b)
+  val OP_12 = Value(0x5c)
+  val OP_13 = Value(0x5d)
+  val OP_14 = Value(0x5e)
+  val OP_15 = Value(0x5f)
+  val OP_16 = Value(0x60)
+
+  // control
+  val OP_NOP = Value(0x61)
+  val OP_VER = Value(0x62)
+  val OP_IF = Value(0x63)
+  val OP_NOTIF = Value(0x64)
+  val OP_VERIF = Value(0x65)
+  val OP_VERNOTIF = Value(0x66)
+  val OP_ELSE = Value(0x67)
+  val OP_ENDIF = Value(0x68)
+  val OP_VERIFY = Value(0x69)
+  val OP_RETURN = Value(0x6a)
+
+  // stack ops
+  val OP_TOALTSTACK = Value(0x6b)
+  val OP_FROMALTSTACK = Value(0x6c)
+  val OP_2DROP = Value(0x6d)
+  val OP_2DUP = Value(0x6e)
+  val OP_3DUP = Value(0x6f)
+  val OP_2OVER = Value(0x70)
+  val OP_2ROT = Value(0x71)
+  val OP_2SWAP = Value(0x72)
+  val OP_IFDUP = Value(0x73)
+  val OP_DEPTH = Value(0x74)
+  val OP_DROP = Value(0x75)
+  val OP_DUP = Value(0x76)
+  val OP_NIP = Value(0x77)
+  val OP_OVER = Value(0x78)
+  val OP_PICK = Value(0x79)
+  val OP_ROLL = Value(0x7a)
+  val OP_ROT = Value(0x7b)
+  val OP_SWAP = Value(0x7c)
+  val OP_TUCK = Value(0x7d)
+
+  // splice ops
+  val OP_CAT = Value(0x7e)
+  val OP_SUBSTR = Value(0x7f)
+  val OP_LEFT = Value(0x80)
+  val OP_RIGHT = Value(0x81)
+  val OP_SIZE = Value(0x82)
+
+  // bit logic
+  val OP_INVERT = Value(0x83)
+  val OP_AND = Value(0x84)
+  val OP_OR = Value(0x85)
+  val OP_XOR = Value(0x86)
+  val OP_EQUAL = Value(0x87)
+  val OP_EQUALVERIFY = Value(0x88)
+  val OP_RESERVED1 = Value(0x89)
+  val OP_RESERVED2 = Value(0x8a)
+
+  // numeric
+  val OP_1ADD = Value(0x8b)
+  val OP_1SUB = Value(0x8c)
+  val OP_2MUL = Value(0x8d)
+  val OP_2DIV = Value(0x8e)
+  val OP_NEGATE = Value(0x8f)
+  val OP_ABS = Value(0x90)
+  val OP_NOT = Value(0x91)
+  val OP_0NOTEQUAL = Value(0x92)
+  val OP_ADD = Value(0x93)
+  val OP_SUB = Value(0x94)
+  val OP_MUL = Value(0x95)
+  val OP_DIV = Value(0x96)
+  val OP_MOD = Value(0x97)
+  val OP_LSHIFT = Value(0x98)
+  val OP_RSHIFT = Value(0x99)
+  val OP_BOOLAND = Value(0x9a)
+  val OP_BOOLOR = Value(0x9b)
+  val OP_NUMEQUAL = Value(0x9c)
+  val OP_NUMEQUALVERIFY = Value(0x9d)
+  val OP_NUMNOTEQUAL = Value(0x9e)
+  val OP_LESSTHAN = Value(0x9f)
+  val OP_GREATERTHAN = Value(0xa0)
+  val OP_LESSTHANOREQUAL = Value(0xa1)
+  val OP_GREATERTHANOREQUAL = Value(0xa2)
+  val OP_MIN = Value(0xa3)
+  val OP_MAX = Value(0xa4)
+  val OP_WITHIN = Value(0xa5)
+
+  // crypto
+  val OP_RIPEMD160 = Value(0xa6)
+  val OP_SHA1 = Value(0xa7)
+  val OP_SHA256 = Value(0xa8)
+  val OP_HASH160 = Value(0xa9)
+  val OP_HASH256 = Value(0xaa)
+  val OP_CODESEPARATOR = Value(0xab)
+  val OP_CHECKSIG = Value(0xac)
+  val OP_CHECKSIGVERIFY = Value(0xad)
+  val OP_CHECKMULTISIG = Value(0xae)
+  val OP_CHECKMULTISIGVERIFY = Value(0xaf)
+
+  // block state
+  /** Check lock time of the block. Introduced in BIP 65, replacing OP_NOP2 */
+  val OP_CHECKLOCKTIMEVERIFY = Value(0xb1)
+  val OP_CHECKSEQUENCEVERIFY = Value(0xb2)
+
+  // expansion
+  val OP_NOP1 = Value(0xb0)
+  /** Deprecated by BIP 65 */
+  @deprecated val OP_NOP2 = OP_CHECKLOCKTIMEVERIFY
+  /** Deprecated by BIP 112 */
+  //@deprecated val OP_NOP = OP_CHECKSEQUENCEVERIFY (op_nop already defined in this enum)
+  val OP_NOP4 = Value(0xb3)
+  val OP_NOP5 = Value(0xb4)
+  val OP_NOP6 = Value(0xb5)
+  val OP_NOP7 = Value(0xb6)
+  val OP_NOP8 = Value(0xb7)
+  val OP_NOP9 = Value(0xb8)
+  val OP_NOP10 = Value(0xb9)
+  val OP_INVALIDOPCODE = Value(0xff)
+
+}

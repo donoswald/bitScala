@@ -3,7 +3,12 @@ package donmiguel
 object Main {
   def main(args: Array[String]) {
 
-    println(LeConverter.readLongLE(CryptoUtil.hexToBytes("19430600").iterator, 4))
+
+
+    for (op <- OpCode.values) {
+      println(s"name $op -> value $op.id",op.id)
+    }
+
 
   }
 }
