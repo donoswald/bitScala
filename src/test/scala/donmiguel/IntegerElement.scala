@@ -19,7 +19,6 @@ case class IntegerElement(var x: BigInt) extends Element {
   }
 
   override def **(exponent: BigInt): Element = {
-    //Fixme must convert to Int for exponentiation!
     new IntegerElement(this.x.pow(exponent.toInt))
   }
 

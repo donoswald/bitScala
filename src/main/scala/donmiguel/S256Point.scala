@@ -31,14 +31,11 @@ class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp
   def address(compressed: Boolean = true, testnet: Boolean = true): String = {
 
     val hash = CryptoUtil.hash160(sec(compressed))
-    //FIXME should be possible with an Int or an unsigned Byte
-    var prefix: BigInt = null
+    var prefix: Byte = 0x00
     if (testnet) {
-      prefix = 0x6f
-    } else {
-      prefix = 0x00
+      prefix = 0x6f.toByte
     }
-    return CryptoUtil.checksumBase58(Array.concat(prefix.toByteArray, hash))
+    return CryptoUtil.checksumBase58(Array.concat(Array(prefix), hash))
   }
 
   def sec(compressed: Boolean): Array[Byte] = {
