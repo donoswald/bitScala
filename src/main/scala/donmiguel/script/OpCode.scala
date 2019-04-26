@@ -88,6 +88,9 @@ object OpCode extends Enumeration {
   val OP_DATA_74 = Value(74)
   val OP_DATA_75 = Value(75)
 
+  val OP_DATA_MIN = OP_DATA_1
+  val OP_DATA_MAX = OP_DATA_75
+
   val OP_PUSHDATA1 = Value(76)
   val OP_PUSHDATA2 = Value(77)
   val OP_PUSHDATA4 = Value(78)

@@ -1,6 +1,5 @@
 package donmiguel.script
 
-import donmiguel._
 import donmiguel.util.{LeConverter, VarInt}
 
 import scala.collection.mutable.ListBuffer
@@ -88,7 +87,7 @@ object Script {
       }
       count += 1
 
-      if (current >= elementStart && current <= elementEnd) {
+      if (current >= OpCode.OP_DATA_MIN.id && current <= OpCode.OP_DATA_MAX.id) {
 
         var n = current
         cmds.+=(createElement(it, n, n))
