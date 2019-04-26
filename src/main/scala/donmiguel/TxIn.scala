@@ -2,6 +2,12 @@ package donmiguel
 
 case class TxIn(prev_tx: String, prev_idx: Int, script_sig: Script, sequence: Int) {
 
+  def value: Long = {
+    var tx = TxFetcher.cache(prev_tx)
+
+    tx.outs(prev_idx).amount
+  }
+
 }
 
 object TxIn {
