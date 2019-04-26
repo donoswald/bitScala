@@ -1,7 +1,21 @@
 package donmiguel
 
-case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int) {
+case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
+  def fee: Long = {
 
+    var sum_in: Long = 0
+    var sum_out: Long = 0
+
+    for (in <- ins) {
+      sum_in += in.value
+    }
+
+    for (out <- outs) {
+      sum_out += out.amount
+    }
+
+    return sum_in - sum_out
+  }
 
 }
 
