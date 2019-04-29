@@ -2,11 +2,17 @@ package donmiguel.util
 
 import java.math.BigInteger
 
-import org.bouncycastle.crypto.digests.{GeneralDigest, RIPEMD160Digest, SHA256Digest}
+import org.bouncycastle.crypto.digests.{GeneralDigest, RIPEMD160Digest, SHA1Digest, SHA256Digest}
 
 import scala.annotation.tailrec
 
 object CryptoUtil {
+
+  def sha1(bytes:Array[Byte]): Array[Byte] = {
+    val digest = new SHA1Digest()
+    hash(digest,bytes)
+  }
+
   val alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
   val map = alphabet.zipWithIndex.toMap
 
@@ -19,6 +25,10 @@ object CryptoUtil {
     hash(digest, bytes)
   }
 
+  def doubleSha256(bytes:Array[Byte]):Array[Byte]={
+    sha256(sha256(bytes))
+  }
+
   def hexToBytes(hex: String): Array[Byte] = {
     hex.sliding(2, 2).toArray.map(Integer.parseInt(_, 16).toByte)
   }
@@ -28,7 +38,7 @@ object CryptoUtil {
   }
 
   def checksumBase58(input: Array[Byte]): String = {
-    val doubleHash = sha256(sha256(input))
+    val doubleHash = doubleSha256(input)
     val first4 = Array.ofDim[Byte](4)
     Array.copy(doubleHash, 0, first4, 0, 4)
     encodeBase58(Array.concat(input, first4))

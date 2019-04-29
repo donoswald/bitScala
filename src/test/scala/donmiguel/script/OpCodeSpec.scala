@@ -29,4 +29,21 @@ class OpCodeSpec extends UnitSpec {
     assert(OpCode.decode(OpCode.encode(Long.MinValue + 1)) == Long.MinValue + 1)
   }
 
+  it should "cast to bool" in {
+
+    assert(OpCode.toBool(OpCode.encode(0L)) == false)
+
+    assert(OpCode.toBool(OpCode.encode(0x00)) == false)
+
+    assert(OpCode.toBool(OpCode.encode(0x80)) == false)
+
+    assert(OpCode.toBool(OpCode.encode(0x01)) == true)
+
+
+    assert(OpCode.toBool(OpCode.encode(0xff)) == true)
+
+    assert(OpCode.toBool(OpCode.encode(0x0080)) == false)
+
+  }
+
 }

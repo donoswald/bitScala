@@ -2,12 +2,11 @@ package donmiguel.script
 
 import java.util
 
-import donmiguel.script.OpCode.{decode, encode, toBool}
+import donmiguel.script.OpCode.{Value, decode, encode, toBool}
+import donmiguel.util.CryptoUtil
 
 abstract class OpValue(code: Int) {
   def execute(stack: util.LinkedList[Array[Byte]]): Boolean
-
-
 }
 
 object OpValue {
@@ -399,16 +398,8 @@ object OpValue {
   }
   val OP_EQUALVERIFY = new OpValue(136) {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
-      if (stack.size() < 2)
-        return false
-      val e0 = stack.pop()
-      val e1 = stack.pop()
-      if (e0.deep == e1.deep)
-        stack.push(encode(1))
-      else
-        stack.push(encode(0))
 
-      OpValue.OP_VERIFY.execute(stack)
+      OpValue.OP_EQUAL.execute(stack) && OpValue.OP_VERIFY.execute(stack)
 
     }
   }
@@ -532,9 +523,9 @@ object OpValue {
       if (stack.size() < 2)
         return false
 
-      val e0 = stack.pop()
-      val e1 = stack.pop()
-      if (toBool(e0) && toBool(e1))
+      val b = stack.pop()
+      val a = stack.pop()
+      if (toBool(a) && toBool(b))
         stack.push(encode(1))
       else
         stack.push(encode(0))
@@ -542,14 +533,15 @@ object OpValue {
       true
     }
   }
+
   val OP_BOOLOR = new OpValue(155) {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       if (stack.size() < 2)
         return false
 
-      val e0 = stack.pop()
-      val e1 = stack.pop()
-      if (toBool(e0) || toBool(e1))
+      val b = stack.pop()
+      val a = stack.pop()
+      if (toBool(a) || toBool(b))
         stack.push(encode(1))
       else
         stack.push(encode(0))
@@ -558,6 +550,240 @@ object OpValue {
     }
   }
 
+  val OP_NUMEQUAL = new OpValue(156) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val a = decode(stack.pop())
+      val b = decode(stack.pop())
+      if (a == b)
+        stack.push(encode(1))
+      else
+        stack.push(encode(0))
+
+      true
+    }
+  }
+
+  val OP_NUMEQUALVERIFY = new OpValue(157) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+
+      OP_NUMEQUAL.execute(stack) && OP_VERIFY.execute(stack)
+    }
+  }
+
+  val OP_NUMNOTEQUAL = new OpValue(158) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val b = decode(stack.pop())
+      val a = decode(stack.pop())
+      if (a == b)
+        stack.push(encode(0))
+      else
+        stack.push(encode(1))
+
+      true
+    }
+  }
+
+  val OP_LESSTHAN = new OpValue(159) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val b = decode(stack.pop())
+      val a = decode(stack.pop())
+      if (a < b)
+        stack.push(encode(1))
+      else
+        stack.push(encode(0))
+
+      true
+    }
+  }
+
+  val OP_GREATERTHAN = new OpValue(160) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val b = decode(stack.pop())
+      val a = decode(stack.pop())
+      if (a > b)
+        stack.push(encode(1))
+      else
+        stack.push(encode(0))
+
+      true
+    }
+  }
+
+  val OP_LESSTHANOREQUAL = new OpValue(161) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val b = decode(stack.pop())
+      val a = decode(stack.pop())
+      if (a <= b)
+        stack.push(encode(1))
+      else
+        stack.push(encode(0))
+
+      true
+    }
+  }
+
+  val OP_GREATERTHANOREQUAL = new OpValue(162) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val b = decode(stack.pop())
+      val a = decode(stack.pop())
+      if (a >= b)
+        stack.push(encode(1))
+      else
+        stack.push(encode(0))
+
+      true
+    }
+  }
+
+  val OP_MIN = new OpValue(163) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val b = decode(stack.pop())
+      val a = decode(stack.pop())
+      if (a < b)
+        stack.push(encode(a))
+      else
+        stack.push(encode(b))
+
+      true
+    }
+  }
+
+  val OP_MAX = new OpValue(164) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val b = decode(stack.pop())
+      val a = decode(stack.pop())
+      if (a > b)
+        stack.push(encode(a))
+      else
+        stack.push(encode(b))
+
+      true
+    }
+  }
+
+  val OP_WITHIN = new OpValue(165) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 3)
+        return false
+
+      val max = decode(stack.pop())
+      val min = decode(stack.pop())
+      val x = decode(stack.pop())
+      if (x >= min && x < max)
+        stack.push(encode(1))
+      else
+        stack.push(encode(0))
+
+      true
+    }
+  }
+
+  val OP_RIPEMD160 = new OpValue(166) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 1)
+        return false
+
+      val x = stack.pop()
+      stack.push(CryptoUtil.ripemd160(x))
+
+      true
+    }
+  }
+
+  val OP_SHA1 = new OpValue(167) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 1)
+        return false
+
+      val x = stack.pop()
+      stack.push(CryptoUtil.sha1(x))
+
+      true
+    }
+  }
+
+  val OP_SHA256 = new OpValue(168) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 1)
+        return false
+
+      val x = stack.pop()
+      stack.push(CryptoUtil.sha256(x))
+
+      true
+    }
+  }
+  val OP_HASH160 = new OpValue(169) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 1)
+        return false
+
+      val x = stack.pop()
+      stack.push(CryptoUtil.hash160(x))
+
+      true
+    }
+  }
+  val OP_HASH256 = new OpValue(170) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      if (stack.size() < 1)
+        return false
+
+      val x = stack.pop()
+      stack.push(CryptoUtil.doubleSha256(x))
+
+      true
+    }
+  }
+  val OP_CODESEPARATOR = new OpValue(171) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      false
+    }
+  }
+  val OP_CHECKSIG = new OpValue(172) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      false
+    }
+  }
+  val OP_CHECKSIGVERIFY = new OpValue(173) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      false
+    }
+  }
+  val OP_CHECKMULTISIG = new OpValue(174) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      false
+    }
+  }
+  val OP_CHECKMULTISIGVERIFY = new OpValue(175) {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      false
+    }
+  }
 
 }
 
