@@ -53,15 +53,15 @@ object CryptoUtil {
       val builder = new StringBuilder
 
       @tailrec
-      def encode1(current: BigInteger): Unit = current match {
+      def encode(current: BigInteger): Unit = current match {
         case BigInteger.ZERO => ()
         case _ =>
           val Array(x, remainder) = current.divideAndRemainder(BigInteger.valueOf(58L))
           builder.append(alphabet.charAt(remainder.intValue))
-          encode1(x)
+          encode(x)
       }
 
-      encode1(big)
+      encode(big)
       input.takeWhile(_ == 0).map(_ => builder.append(alphabet.charAt(0)))
       builder.toString().reverse
     }
