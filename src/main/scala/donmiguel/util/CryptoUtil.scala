@@ -8,6 +8,10 @@ import scala.annotation.tailrec
 
 object CryptoUtil {
 
+  val SIGHASH_ALL = 1
+  val SIGHASH_NONE = 2
+  val SIGHASH_SINGLE = 3
+
   def sha1(bytes:Array[Byte]): Array[Byte] = {
     val digest = new SHA1Digest()
     hash(digest,bytes)

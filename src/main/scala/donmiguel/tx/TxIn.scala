@@ -1,16 +1,35 @@
 package donmiguel.tx
 
+import java.nio.{ByteBuffer, ByteOrder}
+
 import donmiguel.script.Script
 import donmiguel.util.{CryptoUtil, LeConverter}
 
-case class TxIn(prev_tx: String, prev_idx: Int, script_sig: Script, sequence: Int) {
+case class TxIn(prev_tx: String, prev_idx: Int, script_sig: Script = new Script(), sequence: Int = 0xffffffff) {
 
   def value: Long = {
     var tx = TxFetcher.cache(prev_tx)
-
     tx.outs(prev_idx).amount
   }
 
+  def script_pubkey: Script = {
+    var tx = TxFetcher.cache(prev_tx)
+    tx.outs(prev_idx).script_pubkey
+  }
+
+  def serialize: Array[Byte] = {
+    var bb = ByteBuffer.allocate(999999999)
+      .put(CryptoUtil.hexToBytes(this.prev_tx).reverse)
+      .order(ByteOrder.LITTLE_ENDIAN)
+      .putInt(prev_idx)
+      .order(ByteOrder.BIG_ENDIAN)
+      .put(this.script_sig.serialize)
+      .order(ByteOrder.LITTLE_ENDIAN)
+      .putInt(this.sequence)
+      .order(ByteOrder.BIG_ENDIAN)
+
+    return bb.array().slice(0, bb.position())
+  }
 }
 
 object TxIn {

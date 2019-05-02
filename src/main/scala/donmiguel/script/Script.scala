@@ -4,7 +4,7 @@ import donmiguel.util.{LeConverter, VarInt}
 
 import scala.collection.mutable.ListBuffer
 
-case class Script(elems: List[ScriptElement]) {
+case class Script(elems: List[ScriptElement] = List.empty) {
 
 
   def serialize: Array[Byte] = {

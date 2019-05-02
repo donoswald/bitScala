@@ -1,6 +1,7 @@
 package donmiguel.crypto
 
 import donmiguel.UnitSpec
+import donmiguel.tx.Signature
 import donmiguel.util.CryptoUtil
 
 class S256PointSpec extends UnitSpec {
@@ -79,6 +80,21 @@ class S256PointSpec extends UnitSpec {
       assert(point.address(row._4.asInstanceOf[Boolean], true) == row._3)
 
     }
+  }
+
+  it should "verify" in {
+
+    var point = S256Point.parse(CryptoUtil.hexToBytes("0349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278a"))
+    var sig = Signature.parse(CryptoUtil.hexToBytes("3045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed"))
+    var z = CryptoUtil.hexToBytes("27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6")
+
+    assert(point.verify(z, sig) == true)
+
+    point = S256Point.parse(CryptoUtil.hexToBytes("0349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278a"))
+    sig = Signature.parse(CryptoUtil.hexToBytes("3045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed"))
+    z = CryptoUtil.hexToBytes("27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6")
+
+    assert(point.verify(z, sig) == true)
   }
 
 }

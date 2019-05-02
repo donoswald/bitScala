@@ -1,6 +1,8 @@
 package donmiguel.tx
 
-import donmiguel.util.{LeConverter, VarInt}
+import java.nio.{ByteBuffer, ByteOrder}
+
+import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
 case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
   def fee: Long = {
@@ -18,6 +20,64 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
 
     return sum_in - sum_out
   }
+
+  def serialize:Array[Byte]={
+    val bb = ByteBuffer.allocate(999999999)
+      .order(ByteOrder.LITTLE_ENDIAN)
+      .putInt(this.version)
+      .order(ByteOrder.BIG_ENDIAN)
+      .put(VarInt.toVarint(this.ins.length))
+    for(txIn<-ins){
+      bb.put(txIn.serialize)
+    }
+    bb.put(VarInt.toVarint(this.outs.length))
+    for(txOut<-outs){
+      bb.put(txOut.serialize)
+    }
+    bb.order(ByteOrder.LITTLE_ENDIAN)
+    bb.putInt(this.locktime)
+    bb.array().slice(0,bb.position())
+  }
+
+  def sig_hash(input_index: Int): BigInt = {
+    val bb = ByteBuffer.allocate(999999999)
+      .order(ByteOrder.LITTLE_ENDIAN)
+      .putInt(version)
+      .order(ByteOrder.BIG_ENDIAN)
+      .put(VarInt.toVarint(this.ins.length))
+
+    for (i <- 0 until this.ins.length) {
+      val tx_in = this.ins(i)
+
+      if (i == input_index) {
+        bb.put(new TxIn(
+          tx_in.prev_tx,
+          tx_in.prev_idx,
+          tx_in.script_pubkey,
+          tx_in.sequence
+        ).serialize)
+      } else {
+        bb.put(new TxIn(
+          tx_in.prev_tx,
+          tx_in.prev_idx,
+          null,
+          tx_in.sequence
+        ).serialize)
+      }
+    }
+    bb.put(VarInt.toVarint(this.outs.length))
+    for(txOut<- outs){
+      bb.put(txOut.serialize)
+    }
+
+    bb.order(ByteOrder.LITTLE_ENDIAN)
+    bb.putInt(this.locktime)
+    bb.putInt(CryptoUtil.SIGHASH_ALL)
+
+    val s = bb.array().slice(0,bb.position())
+    BigInt.apply(CryptoUtil.bytesToHex(CryptoUtil.doubleSha256(s)),16)
+  }
+
 
 }
 

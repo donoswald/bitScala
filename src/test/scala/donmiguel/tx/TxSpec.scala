@@ -59,4 +59,16 @@ class TxSpec extends UnitSpec {
 
   }
 
+  it should "sig hash" in {
+    var raw = "010000000199a24308080ab26e6fb65c4eccfadf76749bb5bfa8cb08f291320b3c21e56f0d0d00000000ffffffff02408af701000000001976a914d52ad7ca9b3d096a38e752c2018e6fbc40cdf26f88ac80969800000000001976a914507b27411ccf7f16f10297de6cef3f291623eddf88ac00000000"
+
+    Tx.parse(CryptoUtil.hexToBytes(raw).iterator)
+
+    TxFetcher.load("tx.cache")
+    var txOpt = TxFetcher.cache.get("452c629d67e41baec3ac6f04fe744b4b9617f8f859c63b3002f8684e7a4fee03")
+    var tx = txOpt.get
+
+    assert(tx.sig_hash(0)==BigInt.apply( "27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6",16))
+  }
+
 }

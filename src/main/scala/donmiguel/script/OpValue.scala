@@ -2,7 +2,9 @@ package donmiguel.script
 
 import java.util
 
-import donmiguel.script.OpCode.{Value, decode, encode, toBool}
+import donmiguel.crypto.S256Point
+import donmiguel.script.OpCode.{decode, encode, toBool}
+import donmiguel.tx.Signature
 import donmiguel.util.CryptoUtil
 
 abstract class OpValue(code: Int) {
@@ -759,14 +761,31 @@ object OpValue {
       true
     }
   }
+
+  //TODO what where ?
   val OP_CODESEPARATOR = new OpValue(171) {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       false
     }
   }
   val OP_CHECKSIG = new OpValue(172) {
-    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
-      false
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+
+    def execute(stack: util.LinkedList[Array[Byte]], z: Array[Byte]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      val sec_pubkey = stack.pop()
+      var der_sig = stack.pop()
+      der_sig = der_sig.drop(der_sig.length - 1) // take off the last byte of the signature as that's the hash_type
+      val sig = Signature.parse(der_sig)
+      val point = S256Point.parse(sec_pubkey)
+
+      if (point.verify(z, sig))
+        stack.push(encode(1))
+      else
+        stack.push(encode(0))
+      true
     }
   }
   val OP_CHECKSIGVERIFY = new OpValue(173) {
