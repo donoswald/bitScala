@@ -5,8 +5,6 @@ import org.bouncycastle.util.BigIntegers
 
 case class Signature(r: BigInt, s: BigInt) {
 
-  override def toString: String = s"s = $s\nr = $r"
-
   def der(): Array[Byte] = {
     val nullByte = Array.ofDim[Byte](1)
     nullByte(0) = 0x00

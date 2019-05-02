@@ -2,6 +2,7 @@ package donmiguel.tx
 
 import java.nio.{ByteBuffer, ByteOrder}
 
+import donmiguel.script.Script
 import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
 case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
@@ -49,21 +50,19 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     for (i <- 0 until this.ins.length) {
       val tx_in = this.ins(i)
 
+      var script: Option[Script] = None
+
       if (i == input_index) {
-        bb.put(new TxIn(
-          tx_in.prev_tx,
-          tx_in.prev_idx,
-          tx_in.script_pubkey,
-          tx_in.sequence
-        ).serialize)
-      } else {
-        bb.put(new TxIn(
-          tx_in.prev_tx,
-          tx_in.prev_idx,
-          null,
-          tx_in.sequence
-        ).serialize)
+        script = Some(tx_in.script_pubkey)
       }
+
+      bb.put(new TxIn(
+        tx_in.prev_tx,
+        tx_in.prev_idx,
+        script.orNull,
+        tx_in.sequence
+      ).serialize)
+
     }
     bb.put(VarInt.toVarint(this.outs.length))
     for(txOut<- outs){
