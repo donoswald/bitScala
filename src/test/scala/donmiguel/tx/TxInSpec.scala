@@ -1,10 +1,7 @@
 package donmiguel.tx
 
-import java.nio.{ByteBuffer, ByteOrder}
-import java.nio.charset.Charset
-
 import donmiguel.UnitSpec
-import donmiguel.util.{CryptoUtil, LeConverter}
+import donmiguel.util.CryptoUtil
 
 class TxInSpec extends UnitSpec {
 
@@ -52,7 +49,7 @@ class TxInSpec extends UnitSpec {
 
     var raw = "813f79011acb80925dfe69b3def355fe914bd1d96a3f5f71bf8303c6a989c7d1000000006b483045022100ed81ff192e75a3fd2304004dcadb746fa5e24c5031ccfcf21320b0277457c98f02207a986d955c6e0cb35d446a89d3f56100f4d7f67801c31967743a9c8e10615bed01210349fc4e631e3624a545de3f89f5d8684c7b8138bd94bdd531d2e213bf016b278afeffffff"
     var txIn = TxIn.parse(CryptoUtil.hexToBytes(raw).iterator)
-    assert(CryptoUtil.bytesToHex(txIn.serialize)==raw)
+    assert(CryptoUtil.bytesToHex(txIn.serialize) == raw)
 
   }
 

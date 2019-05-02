@@ -6,7 +6,7 @@ import java.util
 import donmiguel.UnitSpec
 import donmiguel.util.CryptoUtil
 
-class OpValueSpec extends UnitSpec{
+class OpValueSpec extends UnitSpec {
 
   it should "if dup" in {
 
@@ -130,9 +130,9 @@ class OpValueSpec extends UnitSpec{
     assert(OpValue.OP_ROT.execute(list) == true)
     assert(list.size() == 3)
 
-    assert(list.get(0).deep==Array(0x00).deep)
-    assert(list.get(1).deep==Array(0x02).deep)
-    assert(list.get(2).deep==Array(0x01).deep)
+    assert(list.get(0).deep == Array(0x00).deep)
+    assert(list.get(1).deep == Array(0x02).deep)
+    assert(list.get(2).deep == Array(0x01).deep)
 
   }
 
@@ -147,8 +147,8 @@ class OpValueSpec extends UnitSpec{
     list.push(Array(0x01))
     assert(OpValue.OP_SWAP.execute(list) == true)
     assert(list.size() == 2)
-    assert(list.get(0).deep==Array(0x00).deep)
-    assert(list.get(1).deep==Array(0x01).deep)
+    assert(list.get(0).deep == Array(0x00).deep)
+    assert(list.get(1).deep == Array(0x01).deep)
 
   }
 
@@ -163,9 +163,9 @@ class OpValueSpec extends UnitSpec{
     list.push(Array(0x01))
     assert(OpValue.OP_TUCK.execute(list) == true)
     assert(list.size() == 3)
-    assert(list.get(0).deep==Array(0x01).deep)
-    assert(list.get(1).deep==Array(0x00).deep)
-    assert(list.get(2).deep==Array(0x01).deep)
+    assert(list.get(0).deep == Array(0x01).deep)
+    assert(list.get(1).deep == Array(0x00).deep)
+    assert(list.get(2).deep == Array(0x01).deep)
 
   }
 
@@ -195,10 +195,10 @@ class OpValueSpec extends UnitSpec{
     list.push(Array(0x01))
     assert(OpValue.OP_2DUP.execute(list) == true)
     assert(list.size() == 4)
-    assert(list.get(0).deep==Array(0x01).deep)
-    assert(list.get(1).deep==Array(0x00).deep)
-    assert(list.get(2).deep==Array(0x01).deep)
-    assert(list.get(3).deep==Array(0x00).deep)
+    assert(list.get(0).deep == Array(0x01).deep)
+    assert(list.get(1).deep == Array(0x00).deep)
+    assert(list.get(2).deep == Array(0x01).deep)
+    assert(list.get(3).deep == Array(0x00).deep)
 
   }
 
@@ -216,12 +216,12 @@ class OpValueSpec extends UnitSpec{
     list.push(Array(0x02))
     assert(OpValue.OP_3DUP.execute(list) == true)
     assert(list.size() == 6)
-    assert(list.get(0).deep==Array(0x02).deep)
-    assert(list.get(1).deep==Array(0x01).deep)
-    assert(list.get(2).deep==Array(0x00).deep)
-    assert(list.get(3).deep==Array(0x02).deep)
-    assert(list.get(4).deep==Array(0x01).deep)
-    assert(list.get(5).deep==Array(0x00).deep)
+    assert(list.get(0).deep == Array(0x02).deep)
+    assert(list.get(1).deep == Array(0x01).deep)
+    assert(list.get(2).deep == Array(0x00).deep)
+    assert(list.get(3).deep == Array(0x02).deep)
+    assert(list.get(4).deep == Array(0x01).deep)
+    assert(list.get(5).deep == Array(0x00).deep)
 
   }
 
@@ -243,12 +243,12 @@ class OpValueSpec extends UnitSpec{
     assert(OpValue.OP_2OVER.execute(list) == true)
 
     assert(list.size() == 6)
-    assert(list.get(0).deep==Array(0x01).deep)
-    assert(list.get(1).deep==Array(0x00).deep)
-    assert(list.get(2).deep==Array(0x03).deep)
-    assert(list.get(3).deep==Array(0x02).deep)
-    assert(list.get(4).deep==Array(0x01).deep)
-    assert(list.get(5).deep==Array(0x00).deep)
+    assert(list.get(0).deep == Array(0x01).deep)
+    assert(list.get(1).deep == Array(0x00).deep)
+    assert(list.get(2).deep == Array(0x03).deep)
+    assert(list.get(3).deep == Array(0x02).deep)
+    assert(list.get(4).deep == Array(0x01).deep)
+    assert(list.get(5).deep == Array(0x00).deep)
 
   }
 
@@ -276,12 +276,12 @@ class OpValueSpec extends UnitSpec{
     assert(OpValue.OP_2ROT.execute(list) == true)
 
     assert(list.size() == 6)
-    assert(list.get(0).deep==Array(0x01).deep)
-    assert(list.get(1).deep==Array(0x00).deep)
-    assert(list.get(2).deep==Array(0x05).deep)
-    assert(list.get(3).deep==Array(0x04).deep)
-    assert(list.get(4).deep==Array(0x03).deep)
-    assert(list.get(5).deep==Array(0x02).deep)
+    assert(list.get(0).deep == Array(0x01).deep)
+    assert(list.get(1).deep == Array(0x00).deep)
+    assert(list.get(2).deep == Array(0x05).deep)
+    assert(list.get(3).deep == Array(0x04).deep)
+    assert(list.get(4).deep == Array(0x03).deep)
+    assert(list.get(5).deep == Array(0x02).deep)
 
   }
 
@@ -302,10 +302,10 @@ class OpValueSpec extends UnitSpec{
     list.push(Array(0x03))
     assert(OpValue.OP_2SWAP.execute(list) == true)
     assert(list.size() == 4)
-    assert(list.get(0).deep==Array(0x01).deep)
-    assert(list.get(1).deep==Array(0x00).deep)
-    assert(list.get(2).deep==Array(0x03).deep)
-    assert(list.get(3).deep==Array(0x02).deep)
+    assert(list.get(0).deep == Array(0x01).deep)
+    assert(list.get(1).deep == Array(0x00).deep)
+    assert(list.get(2).deep == Array(0x03).deep)
+    assert(list.get(3).deep == Array(0x02).deep)
 
   }
 
@@ -817,7 +817,7 @@ class OpValueSpec extends UnitSpec{
 
   }
 
-  it should "double hash sha 256" in{
+  it should "double hash sha 256" in {
 
     var list = new util.LinkedList[Array[Byte]]()
     assert(OpValue.OP_HASH256.execute(list) == false)
@@ -829,7 +829,6 @@ class OpValueSpec extends UnitSpec{
 
 
   }
-
 
 
 }

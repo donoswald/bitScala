@@ -1,6 +1,5 @@
 package donmiguel.crypto
 
-import donmiguel._
 import donmiguel.tx.Signature
 import donmiguel.util.CryptoUtil
 import org.bouncycastle.crypto.params.ECPublicKeyParameters

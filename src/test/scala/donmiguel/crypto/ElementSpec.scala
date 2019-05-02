@@ -5,7 +5,7 @@ import donmiguel.UnitSpec
 class ElementSpec extends UnitSpec {
 
   it should "support == " in {
-    assert(ElementNone==ElementNone)
+    assert(ElementNone == ElementNone)
   }
 
   it should "support != " in {

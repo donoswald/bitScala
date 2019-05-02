@@ -64,7 +64,6 @@ case class Script(elems: List[ScriptElement] = List.empty) {
   }
 
 
-
 }
 
 object Script {
@@ -82,8 +81,8 @@ object Script {
     while (count < length) {
 
       var current = it.next().asInstanceOf[Int]
-      if(current<0){
-        current+=256
+      if (current < 0) {
+        current += 256
       }
       count += 1
 
@@ -107,8 +106,8 @@ object Script {
 
       } else {
 
-        if(current> OpCode.OP_PUSHDATA4.id){
-          cmds.+=(createElement(it,0, current))
+        if (current > OpCode.OP_PUSHDATA4.id) {
+          cmds.+=(createElement(it, 0, current))
         }
       }
 

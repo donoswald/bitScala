@@ -17,7 +17,7 @@ class SignatureSpec extends UnitSpec {
 
     var reconstructed = Signature.parse(original.der)
 
-    assert(original==reconstructed)
+    assert(original == reconstructed)
 
   }
 

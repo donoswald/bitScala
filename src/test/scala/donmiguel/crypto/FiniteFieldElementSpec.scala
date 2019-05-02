@@ -62,9 +62,9 @@ class FiniteFieldElementSpec extends UnitSpec {
     var b = new FiniteFieldElement(7, 223)
 
     var validPoints = Array(
-      (192,105),
+      (192, 105),
       (17, 56),
-      (1,193)
+      (1, 193)
     )
 
     for (pair <- validPoints) {
@@ -74,8 +74,8 @@ class FiniteFieldElementSpec extends UnitSpec {
     }
 
     var invalidPoints = Array(
-      (200,119),
-      (42,99)
+      (200, 119),
+      (42, 99)
     )
     for (pair <- invalidPoints) {
       var x = new FiniteFieldElement(pair._1, prime)

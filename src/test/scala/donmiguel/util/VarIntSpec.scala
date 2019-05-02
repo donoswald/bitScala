@@ -41,7 +41,6 @@ class VarIntSpec extends UnitSpec {
   }
 
 
-
   def assertEquals(x: Any, y: Any) = {
     assert(x == y)
   }

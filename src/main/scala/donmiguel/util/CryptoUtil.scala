@@ -12,9 +12,9 @@ object CryptoUtil {
   val SIGHASH_NONE = 2
   val SIGHASH_SINGLE = 3
 
-  def sha1(bytes:Array[Byte]): Array[Byte] = {
+  def sha1(bytes: Array[Byte]): Array[Byte] = {
     val digest = new SHA1Digest()
-    hash(digest,bytes)
+    hash(digest, bytes)
   }
 
   val alphabet = "123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -29,7 +29,7 @@ object CryptoUtil {
     hash(digest, bytes)
   }
 
-  def doubleSha256(bytes:Array[Byte]):Array[Byte]={
+  def doubleSha256(bytes: Array[Byte]): Array[Byte] = {
     sha256(sha256(bytes))
   }
 

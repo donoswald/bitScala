@@ -22,22 +22,22 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     return sum_in - sum_out
   }
 
-  def serialize:Array[Byte]={
+  def serialize: Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(this.version)
       .order(ByteOrder.BIG_ENDIAN)
       .put(VarInt.toVarint(this.ins.length))
-    for(txIn<-ins){
+    for (txIn <- ins) {
       bb.put(txIn.serialize)
     }
     bb.put(VarInt.toVarint(this.outs.length))
-    for(txOut<-outs){
+    for (txOut <- outs) {
       bb.put(txOut.serialize)
     }
     bb.order(ByteOrder.LITTLE_ENDIAN)
     bb.putInt(this.locktime)
-    bb.array().slice(0,bb.position())
+    bb.array().slice(0, bb.position())
   }
 
   def sig_hash(input_index: Int): BigInt = {
@@ -65,7 +65,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
 
     }
     bb.put(VarInt.toVarint(this.outs.length))
-    for(txOut<- outs){
+    for (txOut <- outs) {
       bb.put(txOut.serialize)
     }
 
@@ -73,8 +73,8 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     bb.putInt(this.locktime)
     bb.putInt(CryptoUtil.SIGHASH_ALL)
 
-    val s = bb.array().slice(0,bb.position())
-    BigInt.apply(CryptoUtil.bytesToHex(CryptoUtil.doubleSha256(s)),16)
+    val s = bb.array().slice(0, bb.position())
+    BigInt.apply(CryptoUtil.bytesToHex(CryptoUtil.doubleSha256(s)), 16)
   }
 
 
@@ -87,13 +87,13 @@ object Tx {
 
     var num_in = VarInt.fromVarint(it)
     var ins = new Array[TxIn](num_in.toInt)
-    for (i <- 0 until  num_in.toInt ) {
+    for (i <- 0 until num_in.toInt) {
       ins(i) = TxIn.parse(it)
     }
 
     var num_out = VarInt.fromVarint(it)
     var outs = new Array[TxOut](num_out.toInt)
-    for (i <- 0 until num_out.toInt ) {
+    for (i <- 0 until num_out.toInt) {
       outs(i) = TxOut.parse(it)
     }
 

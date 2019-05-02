@@ -32,14 +32,14 @@ class LeConverterSpec extends UnitSpec {
   it should "write le" in {
 
     var arr = new Array[Byte](4)
-    LeConverter.writeLE(1,arr,0)
+    LeConverter.writeLE(1, arr, 0)
 
-    assert(arr.deep == Array(1,0,0,0).deep)
+    assert(arr.deep == Array(1, 0, 0, 0).deep)
 
     arr = new Array[Byte](8)
-    LeConverter.writeLE(10011545,arr,0)
+    LeConverter.writeLE(10011545, arr, 0)
 
-    assert(arr.deep==Array(-103,-61,-104,0,0,0,0,0).deep)
+    assert(arr.deep == Array(-103, -61, -104, 0, 0, 0, 0, 0).deep)
   }
 
 }
