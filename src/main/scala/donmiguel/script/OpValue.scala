@@ -777,7 +777,7 @@ object OpValue {
 
       val sec_pubkey = stack.pop()
       var der_sig = stack.pop()
-      der_sig = der_sig.drop(der_sig.length - 1) // take off the last byte of the signature as that's the hash_type
+      der_sig = der_sig.slice(0,der_sig.length-1) // take off the last byte of the signature as that's the hash_type
       val sig = Signature.parse(der_sig)
       val point = S256Point.parse(sec_pubkey)
 
