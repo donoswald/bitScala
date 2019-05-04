@@ -789,8 +789,13 @@ object OpValue {
     }
   }
   val OP_CHECKSIGVERIFY = new OpValue(173) {
-    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
-      false
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+
+    def execute(stack: util.LinkedList[Array[Byte]], z: Array[Byte]): Boolean = {
+      if (stack.size() < 2)
+        return false
+
+      OP_CHECKSIG.execute(stack, z) && OP_VERIFY.execute(stack)
     }
   }
   val OP_CHECKMULTISIG = new OpValue(174) {
