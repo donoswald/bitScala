@@ -21,4 +21,20 @@ class SignatureSpec extends UnitSpec {
 
   }
 
+  it should "der" in {
+
+    val testCases = Array(
+      (1, 3),
+      (Random.nextInt(Math.pow(2, 256).toInt), Random.nextInt(Math.pow(2, 255).toInt)),
+    )
+
+    for (test <- testCases) {
+      val sig = Signature(test._1, test._2)
+      val der = sig.der()
+      val sig2 = Signature.parse(der)
+      assert(sig == sig2)
+    }
+
+  }
+
 }
