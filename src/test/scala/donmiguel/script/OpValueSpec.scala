@@ -859,4 +859,26 @@ class OpValueSpec extends UnitSpec {
     assert(stack.isEmpty)
 
   }
+
+  it should "multisig" in {
+    val z = CryptoUtil.hexToBytes("e71bfa115715d6fd33796948126f40a8cdd39f187e4afb03896795189fe1423c")
+    val sig1 = CryptoUtil.hexToBytes("3045022100dc92655fe37036f47756db8102e0d7d5e28b3beb83a8fef4f5dc0559bddfb94e02205a36d4e4e6c7fcd16658c50783e00c341609977aed3ad00937bf4ee942a8993701")
+    val sig2 = CryptoUtil.hexToBytes("3045022100da6bee3c93766232079a01639d07fa869598749729ae323eab8eef53577d611b02207bef15429dcadce2121ea07f233115c6f09034c0be68db99980b9a6c5e75402201")
+    val sec1 = CryptoUtil.hexToBytes("022626e955ea6ea6d98850c994f9107b036b1334f18ca8830bfff1295d21cfdb70")
+    val sec2 = CryptoUtil.hexToBytes("03b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb71")
+
+    val stack = new util.LinkedList[Array[Byte]]()
+    stack.push(Array(0x00))
+    stack.push(sig1)
+    stack.push(sig2)
+    stack.push(Array(0x02))
+    stack.push(sec1)
+    stack.push(sec2)
+    stack.push(Array(0x02))
+
+    assert(OpValue.OP_CHECKMULTISIG.execute(stack, z) == true)
+    assert(stack.size() == 1)
+    assert(OpCode.decode(stack.get(0)) == 1)
+
+  }
 }

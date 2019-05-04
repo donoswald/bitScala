@@ -16,7 +16,7 @@ class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp
     this(point.x, point.y)
   }
 
-  def verify(message: String, sig: Signature): Boolean = {
+    def verify(message: String, sig: Signature): Boolean = {
 
     val bytes = message.getBytes("UTF-8")
     val hash = Secp256k1.doubleDigest(bytes)

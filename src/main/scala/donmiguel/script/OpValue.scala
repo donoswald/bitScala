@@ -7,6 +7,8 @@ import donmiguel.script.OpCode.{decode, encode, toBool}
 import donmiguel.tx.Signature
 import donmiguel.util.CryptoUtil
 
+import scala.collection.mutable.ListBuffer
+
 abstract class OpValue(code: Int) {
   def execute(stack: util.LinkedList[Array[Byte]]): Boolean
 }
@@ -739,6 +741,7 @@ object OpValue {
       true
     }
   }
+
   val OP_HASH160 = new OpValue(169) {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       if (stack.size() < 1)
@@ -768,6 +771,7 @@ object OpValue {
       false
     }
   }
+
   val OP_CHECKSIG = new OpValue(172) {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
 
@@ -788,6 +792,7 @@ object OpValue {
       true
     }
   }
+
   val OP_CHECKSIGVERIFY = new OpValue(173) {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
 
@@ -798,11 +803,50 @@ object OpValue {
       OP_CHECKSIG.execute(stack, z) && OP_VERIFY.execute(stack)
     }
   }
+
   val OP_CHECKMULTISIG = new OpValue(174) {
-    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
-      false
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+
+    def execute(stack: util.LinkedList[Array[Byte]], z: Array[Byte]): Boolean = {
+      if (stack.size() < 1)
+        return false
+
+      val n = decode(stack.pop()).toInt
+      if (stack.size() < n + 1)
+        return false
+
+      val pks = ListBuffer[Array[Byte]]()
+      for (_ <- 0 until n) {
+        pks.+=(stack.pop())
+      }
+
+      val m = decode(stack.pop()).toInt
+      if (stack.size() < m + 1)
+        return false
+
+      val signatures = ListBuffer[Array[Byte]]()
+      for (_ <- 0 until m) {
+        val sig = stack.pop()
+        signatures.+=(sig.slice(0, sig.length - 1))
+      }
+
+      stack.pop()
+
+      val points = pks.map(sec => S256Point.parse(sec))
+      val sigs = signatures.map(der => Signature.parse(der))
+
+      val found = sigs.filter(sig => points.find(point => point.verify(z, sig)).isDefined)
+
+      if (found.size == m) {
+        stack.push(encode(1))
+        return true
+      }
+      stack.push(encode(0))
+      return false
+
     }
   }
+
   val OP_CHECKMULTISIGVERIFY = new OpValue(175) {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       false
