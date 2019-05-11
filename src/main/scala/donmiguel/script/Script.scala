@@ -1,5 +1,8 @@
 package donmiguel.script
 
+import java.util
+
+import donmiguel.script
 import donmiguel.util.{LeConverter, VarInt}
 
 import scala.collection.mutable.ListBuffer
@@ -12,6 +15,42 @@ case class Script(elems: List[ScriptElement] = List.empty) {
     var total = arr.length
 
     Array.concat(VarInt.toVarint(total), arr)
+  }
+
+  def +(other: Script): Script = {
+    new script.Script(this.elems.++(other.elems))
+  }
+
+  def evaluate(z: Array[Byte]): Boolean = {
+
+    val stack = new util.LinkedList[Array[Byte]]()
+    val altStack = new util.LinkedList[Array[Byte]]()
+    val ifStack = new ListBuffer[Boolean]()
+
+    val result = elems.iterator
+      .foreach(elem => {
+
+        val op = OpCode.map.get(elem.opcode)
+        if (op.isEmpty) {
+          stack.push(elem.data)
+        } else {
+          val opCode = op.get
+          if (opCode.isInstanceOf[SignableOpCode]) {
+            opCode.asInstanceOf[SignableOpCode].execute(stack, z)
+          }
+        }
+
+
+      })
+
+    if (stack.size() == 0)
+      return false
+
+    val top = stack.pop()
+    if (top == Array() || top == Array(0) || top == Array(OpCode.NEGATIVE_ZERO))
+      return false
+
+    return true
   }
 
   private def raw_serialize: Array[Byte] = {
@@ -33,24 +72,24 @@ case class Script(elems: List[ScriptElement] = List.empty) {
           items += Array(elem.data.length.toByte)
           items += elem.data
 
-        } else if (elem.opcode < OpCode.OP_PUSHDATA1.id) {
+        } else if (elem.opcode < OpCode.OP_PUSHDATA1) {
 
           items += Array(elem.opcode.asInstanceOf[Byte])
           items += elem.data
 
-        } else if (elem.opcode == OpCode.OP_PUSHDATA1.id) {
+        } else if (elem.opcode == OpCode.OP_PUSHDATA1) {
 
           items += Array(elem.opcode.asInstanceOf[Byte])
           items += Array(elem.data.length.asInstanceOf[Byte])
           items += elem.data
 
-        } else if (elem.opcode == OpCode.OP_PUSHDATA2.id) {
+        } else if (elem.opcode == OpCode.OP_PUSHDATA2) {
 
           items += Array(elem.opcode.asInstanceOf[Byte])
           items += LeConverter.writeLE(elem.data.length, 2)
           items += elem.data
 
-        } else if (elem.opcode == OpCode.OP_PUSHDATA4.id) {
+        } else if (elem.opcode == OpCode.OP_PUSHDATA4) {
 
           items += Array(elem.opcode.asInstanceOf[Byte])
           items += LeConverter.writeLE(elem.data.length, 4)
@@ -86,28 +125,28 @@ object Script {
       }
       count += 1
 
-      if (current >= OpCode.OP_DATA_MIN.id && current <= OpCode.OP_DATA_MAX.id) {
+      if (current >= OpCode.OP_DATA_MIN && current <= OpCode.OP_DATA_MAX) {
 
         var n = current
-        cmds.+=(createElement(it, n, n))
+        cmds.+=(ScriptElement.create(it, n, n))
         count += n
 
-      } else if (current == OpCode.OP_PUSHDATA1.id) {
+      } else if (current == OpCode.OP_PUSHDATA1) {
 
         var n = LeConverter.readLongLE(it, 1).asInstanceOf[Int]
-        cmds.+=(createElement(it, n, OpCode.OP_PUSHDATA1.id))
+        cmds.+=(ScriptElement.create(it, n, OpCode.OP_PUSHDATA1))
         count += n
 
       } else if (current == OpCode.OP_PUSHDATA2) {
 
         var n = LeConverter.readLongLE(it, 2).asInstanceOf[Int]
-        cmds.+=(createElement(it, n, OpCode.OP_PUSHDATA2.id))
+        cmds.+=(ScriptElement.create(it, n, OpCode.OP_PUSHDATA2))
         count += n + 2
 
       } else {
 
-        if (current > OpCode.OP_PUSHDATA4.id) {
-          cmds.+=(createElement(it, 0, current))
+        if (current > OpCode.OP_PUSHDATA4) {
+          cmds.+=(ScriptElement.create(it, 0, current))
         }
       }
 
@@ -118,11 +157,5 @@ object Script {
     new Script(cmds.toList)
   }
 
-  private def createElement(it: Iterator[Byte], n: Int, opcode: Int): ScriptElement = {
-
-    var arr = new Array[Byte](n)
-    it.copyToArray(arr, 0, n)
-    new ScriptElement(opcode, arr)
-  }
 
 }
