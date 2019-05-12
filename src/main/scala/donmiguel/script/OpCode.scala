@@ -18,17 +18,16 @@ trait SimpleOpCode {
 }
 
 trait IfOpCode {
-  def execute(stack: util.LinkedList[Array[Byte]]): Boolean
+  def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean
+}
+
+trait AltstackOpCode {
+  def execute(stack: util.LinkedList[Array[Byte]], altstack: util.LinkedList[Array[Byte]]): Boolean
 }
 
 trait SignableOpCode {
   def execute(stack: util.LinkedList[Array[Byte]], z: Array[Byte]): Boolean
 }
-
-trait AltstackOpCode {
-  def execute(stack: util.Stack[Any], altstack: util.Deque[Any]): Boolean
-}
-
 
 object OpCode {
   var map = Map[Int, OpCode]()
@@ -236,30 +235,51 @@ object OpCode {
     }
   }
 
-  val OP_IF = new OpCode(99) with SimpleOpCode {
-    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+  val OP_IF = new OpCode(99) with IfOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean = {
       if (stack.size() < 1)
         return false
 
-      if (decode(stack.pop()) != 0) {
-
+      val shouldExecute = !ifStack.contains(false)
+      if (!shouldExecute) {
+        ifStack.add(false)
+        return false
       }
 
-      true
-    }
-  }
-  val OP_NOTIF = new OpCode(100) with SimpleOpCode {
-    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+      ifStack.add(toBool(stack.poll()))
       false
     }
   }
-  val OP_ELSE = new OpCode(103) with SimpleOpCode {
-    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+  val OP_NOTIF = new OpCode(100) with IfOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean = {
+      if (stack.size() < 1)
+        return false
+
+      val shouldExecute = !ifStack.contains(false)
+      if (!shouldExecute) {
+        ifStack.add(false)
+        return false
+      }
+
+      ifStack.add(!toBool(stack.poll()))
       false
     }
   }
-  val OP_ENDIF = new OpCode(104) with SimpleOpCode {
-    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
+  val OP_ELSE = new OpCode(103) with IfOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean = {
+      if (ifStack.size() < 1)
+        return false
+
+      ifStack.add(!ifStack.poll())
+      false
+    }
+  }
+  val OP_ENDIF = new OpCode(104) with IfOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean = {
+      if (ifStack.size() < 1)
+        return false
+
+      ifStack.poll()
       false
     }
   }
@@ -270,7 +290,7 @@ object OpCode {
 
   // stack ops
   val OP_TOALTSTACK = new OpCode(107) with AltstackOpCode {
-    def execute(stack: util.Stack[Any], altstack: util.Deque[Any]): Boolean = {
+    def execute(stack: util.LinkedList[Array[Byte]], altstack: util.LinkedList[Array[Byte]]): Boolean = {
       if (stack.size() < 1)
         return false
       altstack.push(stack.pop())
@@ -278,7 +298,7 @@ object OpCode {
     }
   }
   val OP_FROMALTSTACK = new OpCode(108) with AltstackOpCode {
-    def execute(stack: util.Stack[Any], altstack: util.Deque[Any]): Boolean = {
+    def execute(stack: util.LinkedList[Array[Byte]], altstack: util.LinkedList[Array[Byte]]): Boolean = {
       if (altstack.size() < 1)
         return false
       stack.push(altstack.pop())
@@ -510,6 +530,7 @@ object OpCode {
         return false
       val e0 = stack.pop()
       val e1 = stack.pop()
+
       if (e0.deep == e1.deep)
         stack.push(encode(1))
       else

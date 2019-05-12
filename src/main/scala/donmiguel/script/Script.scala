@@ -18,28 +18,45 @@ case class Script(elems: List[ScriptElement] = List.empty) {
   }
 
   def +(other: Script): Script = {
-    new script.Script(this.elems.++(other.elems))
+    new script.Script(other.elems.++(this.elems))
   }
 
   def evaluate(z: Array[Byte]): Boolean = {
 
     val stack = new util.LinkedList[Array[Byte]]()
     val altStack = new util.LinkedList[Array[Byte]]()
-    val ifStack = new ListBuffer[Boolean]()
+    val ifStack = new util.LinkedList[Boolean]()
+
+    def filterDataElems(elem: ScriptElement): Boolean = {
+      if (OpCode.map.get(elem.opcode).isEmpty) {
+        stack.push(elem.data)
+        return false // don't process this elem further
+      }
+      true
+    }
+
+    def checkIfStatement(opCode: OpCode): Boolean = {
+      if (opCode.isInstanceOf[IfOpCode]) {
+        return opCode.asInstanceOf[IfOpCode].execute(stack, ifStack)
+      }
+      !ifStack.contains(false)
+    }
 
     val result = elems.iterator
-      .foreach(elem => {
+      .filter(elem => filterDataElems(elem))
+      .map(elem => OpCode.map.get(elem.opcode).get)
+      .filter(opCode => checkIfStatement(opCode))
+      .foreach(opCode => {
 
-        val op = OpCode.map.get(elem.opcode)
-        if (op.isEmpty) {
-          stack.push(elem.data)
-        } else {
-          val opCode = op.get
-          if (opCode.isInstanceOf[SignableOpCode]) {
-            opCode.asInstanceOf[SignableOpCode].execute(stack, z)
-          }
+        if (opCode == OpCode.OP_RETURN) {
+          return false // ends the loop
+        } else if (opCode.isInstanceOf[SimpleOpCode]) {
+          if (!opCode.asInstanceOf[SimpleOpCode].execute(stack)) return false // ends the loop
+        } else if (opCode.isInstanceOf[AltstackOpCode]) {
+          if (!opCode.asInstanceOf[AltstackOpCode].execute(stack, altStack)) return false // ends the loop
+        } else if (opCode.isInstanceOf[SignableOpCode]) {
+          if (!opCode.asInstanceOf[SignableOpCode].execute(stack, z)) return false // ends the loop
         }
-
 
       })
 
