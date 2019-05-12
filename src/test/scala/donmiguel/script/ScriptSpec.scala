@@ -29,12 +29,44 @@ class ScriptSpec extends UnitSpec {
     val z = CryptoUtil.hexToBytes("7c076ff316692a3d7eb3c3bb0f8b1488cf72e1afcd929e29307032997a838a3d")
     val sig = CryptoUtil.hexToBytes("3045022000eff69ef2b1bd93a66ed5219add4fb51e11a840f404876325a1e8ffe0529a2c022100c7207fee197d27c618aea621406f6bf5ef6fca38681d82b2f06fddbdce6feab601")
     val sec = CryptoUtil.hexToBytes("04887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34")
+    
+    val script_pub = new Script(List[ScriptElement](
+      ScriptElement.create(sec.iterator,sec.length),
+      ScriptElement.create(OpCode.OP_CHECKSIG)
+    ))
 
-    val sig_elem = ScriptElement.create(sig.iterator, sig.length)
-    val sec_elem = ScriptElement.create(sec.iterator, sec.length)
-    val opCode = ScriptElement.create(OpCode.OP_CHECKSIG)
+    val script_sig = new Script(List[ScriptElement](
+      ScriptElement.create(sig.iterator,sig.length)
+    ))
 
-    val script = new Script(List[ScriptElement](sig_elem, sec_elem, opCode))
+    val script = script_pub+script_sig
+
+    assert(script.evaluate(z))
+
+  }
+
+  it should "evaluate p2pkh" in {
+
+    val z = CryptoUtil.hexToBytes("7c076ff316692a3d7eb3c3bb0f8b1488cf72e1afcd929e29307032997a838a3d")
+    val sig = CryptoUtil.hexToBytes("3045022000eff69ef2b1bd93a66ed5219add4fb51e11a840f404876325a1e8ffe0529a2c022100c7207fee197d27c618aea621406f6bf5ef6fca38681d82b2f06fddbdce6feab601")
+    val hash = CryptoUtil.hexToBytes("fb6c931433c83e8bb5a4c6588c7fc24c08dac6e3")
+    val sec = CryptoUtil.hexToBytes("04887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34")
+
+
+    val script_pub = new Script(List[ScriptElement](
+      ScriptElement.create(OpCode.OP_DUP),
+      ScriptElement.create(OpCode.OP_HASH160),
+      ScriptElement.create(hash.iterator, hash.length),
+      ScriptElement.create(OpCode.OP_EQUALVERIFY),
+      ScriptElement.create(OpCode.OP_CHECKSIG)
+    ))
+
+    val script_sig = new Script(List[ScriptElement](
+      ScriptElement.create(sig.iterator, sig.length),
+      ScriptElement.create(sec.iterator, sec.length)
+    ))
+
+    val script = script_pub + script_sig;
 
     assert(script.evaluate(z))
 
@@ -55,8 +87,7 @@ class ScriptSpec extends UnitSpec {
       ScriptElement.create(OpCode.OP_SWAP),
       ScriptElement.create(OpCode.OP_SHA1),
       ScriptElement.create(OpCode.OP_EQUAL)
-    )
-    )
+    ))
 
     val script_sig = new Script(List[ScriptElement](
       ScriptElement.create(c1.iterator, c1.length),
@@ -73,9 +104,8 @@ class ScriptSpec extends UnitSpec {
     val script_pub = new Script(List[ScriptElement](
       ScriptElement.create(OpCode.OP_ADD),
       ScriptElement.create(OpCode.OP_9),
-      ScriptElement.create(OpCode.OP_EQUAL),
-    )
-    )
+      ScriptElement.create(OpCode.OP_EQUAL)
+    ))
 
     val script_sig = new Script(List[ScriptElement](
       ScriptElement.create(OpCode.OP_4),
