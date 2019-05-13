@@ -6,6 +6,7 @@ import donmiguel.script
 import donmiguel.util.{LeConverter, VarInt}
 
 import scala.collection.mutable.ListBuffer
+import scala.reflect.runtime
 
 case class Script(elems: List[ScriptElement] = List.empty) {
 
@@ -47,6 +48,11 @@ case class Script(elems: List[ScriptElement] = List.empty) {
       .map(elem => OpCode.map.get(elem.opcode).get)
       .filter(opCode => checkIfStatement(opCode))
       .foreach(opCode => {
+
+        if( runtime.universe.typeOf[OpCode].typeSymbol.asClass.annotations.size>0){
+          println(runtime.universe.typeOf[OpCode].typeSymbol.asClass.annotations)
+          return false
+        }
 
         if (opCode == OpCode.OP_RETURN) {
           return false // ends the loop

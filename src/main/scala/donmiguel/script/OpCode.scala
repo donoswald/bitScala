@@ -4,6 +4,7 @@ import java.nio.ByteBuffer
 import java.util
 
 import donmiguel.crypto.S256Point
+import donmiguel.script.OpUtil.Value
 import donmiguel.tx.Signature
 import donmiguel.util.CryptoUtil
 
@@ -122,6 +123,11 @@ object OpCode {
       true
     }
   }
+
+  val OP_RESERVED = new OpCode(80) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+  }
+
   val OP_1 = new OpCode(81) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(1))
@@ -223,6 +229,20 @@ object OpCode {
   val OP_NOP = new OpCode(97) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
   }
+
+  val OP_VER = new OpCode(98) with SimpleOpCode{
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+  }
+
+  val OP_VERIF = new OpCode(101) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+  }
+
+  val OP_VERNOTIF = new OpCode(102) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+  }
+
+
   val OP_VERIFY = new OpCode(105) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       if (stack.size() < 1)
@@ -539,11 +559,21 @@ object OpCode {
       true
     }
   }
+
   val OP_EQUALVERIFY = new OpCode(136) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       OpCode.OP_EQUAL.execute(stack) && OpCode.OP_VERIFY.execute(stack)
     }
   }
+
+  val OP_RESERVED1 = new OpCode(137) with SimpleOpCode{
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+  }
+
+  val OP_RESERVED2 = new OpCode(138) with SimpleOpCode{
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+  }
+
 
   // numeric
   val OP_1ADD = new OpCode(139) with SimpleOpCode {
@@ -989,6 +1019,40 @@ object OpCode {
       OP_CHECKMULTISIG.execute(stack, z) && OP_VERIFY.execute(stack)
     }
   }
+
+  val OP_NOP1 = new OpCode(176) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+  val OP_NOP4 = new OpCode(179) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+  val OP_NOP5 = new OpCode(180) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+  val OP_NOP6 = new OpCode(181) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+  val OP_NOP7 = new OpCode(182) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+  val OP_NOP8 = new OpCode(183) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+  val OP_NOP9 = new OpCode(184) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+  val OP_NOP10 = new OpCode(185) with SimpleOpCode {
+    override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+  }
+
+
 
 }
 
