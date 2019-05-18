@@ -28,7 +28,7 @@ class TxInSpec extends UnitSpec {
 
     var txIn = TxIn.parse(CryptoUtil.hexToBytes(raw).iterator)
 
-    assert(txIn.sequence == 0xfffffffe)
+    assert(txIn.sequence == 4294967294L)
   }
 
   it should "input value" in {

@@ -118,24 +118,4 @@ class ScriptSpec extends UnitSpec {
 
   }
 
-
-  it should "fail reserved" in{
-    val script_pub = new Script(List[ScriptElement](
-      ScriptElement.create(OpCode.OP_ADD),
-      ScriptElement.create(OpCode.OP_9),
-      ScriptElement.create(OpCode.OP_EQUAL),
-      ScriptElement.create(OpCode.OP_VERIF)
-    ))
-
-    val script_sig = new Script(List[ScriptElement](
-      ScriptElement.create(OpCode.OP_4),
-      ScriptElement.create(OpCode.OP_5)
-    ))
-
-    val script = script_pub+script_sig
-
-    assert(script.evaluate(Array()))
-
-  }
-
 }

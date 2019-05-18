@@ -7,11 +7,15 @@ import org.bouncycastle.crypto.params.ECPrivateKeyParameters
 import org.bouncycastle.crypto.signers.{ECDSASigner, HMacDSAKCalculator}
 
 class PrivateKey(val privKey: BigInt) {
-
+  val point = Secp256k1.G * privKey
 
   def sign(message: String): Signature = {
     val bytes = message.getBytes("UTF-8")
-    val hash = Secp256k1.doubleDigest(bytes)
+    sign(bytes)
+  }
+
+  def sign(z: Array[Byte]): Signature = {
+    val hash = Secp256k1.doubleDigest(z)
 
     val signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()))
     val privKeyParams = new ECPrivateKeyParameters(privKey.bigInteger, Secp256k1.ecParams)

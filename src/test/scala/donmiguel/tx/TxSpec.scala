@@ -1,6 +1,7 @@
 package donmiguel.tx
 
 import donmiguel.UnitSpec
+import donmiguel.script.Script
 import donmiguel.util.CryptoUtil
 
 class TxSpec extends UnitSpec {
@@ -74,7 +75,41 @@ class TxSpec extends UnitSpec {
     var txOpt = TxFetcher.cache.get("452c629d67e41baec3ac6f04fe744b4b9617f8f859c63b3002f8684e7a4fee03")
     var tx = txOpt.get
 
-    assert(tx.sig_hash(0) == BigInt.apply("27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6", 16))
+    assert(tx.sig_hash(0).deep == CryptoUtil.hexToBytes("27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6").deep)
   }
+
+  it should "construct_tx" in {
+
+    val prev_tx = "d6fe5213c0b3291f208cba8bfb59b7476dffacc4e5cb66f6eb20a080843a299"
+    val pref_idx  = 13
+    val txIn = new TxIn(prev_tx,pref_idx)
+
+    val change_amt =(0.33*100000000).toLong
+    val change_h160= CryptoUtil.decodeBase58( "mzx5YhAH9kNHtcN481u6WkjeHjYtVeKVh2")
+    val change_script= Script.p2pkh_script(change_h160)
+    val change_out = new TxOut(change_amt,change_script)
+
+    val target_amt = (0.1*100000000).toLong
+    val target_h160=CryptoUtil.decodeBase58("mnrVtF8DWjMu839VW3rBfgYaAfKk8983Xf")
+    val target_script=Script.p2pkh_script(target_h160)
+    val target_out= new TxOut(target_amt,target_script)
+
+    val tx = new Tx(1,1,Array(txIn),2,Array(change_out,target_out),0,true)
+    //TODO check
+    println(tx)
+  }
+
+  it should "sign_input" in {
+
+    val private_key = new PrivateKey(8675309)
+    val tx= Tx.parse(CryptoUtil.hexToBytes("010000000199a24308080ab26e6fb65c4eccfadf76749bb5bfa8cb08f291320b3c21e56f0d0d00000000ffffffff02408af701000000001976a914d52ad7ca9b3d096a38e752c2018e6fbc40cdf26f88ac80969800000000001976a914507b27411ccf7f16f10297de6cef3f291623eddf88ac00000000").iterator)
+
+    assert (tx.sing_input(0,private_key)==true )
+
+    //FIXME
+    assert(CryptoUtil.bytesToHex(tx.serialize)== "010000000199a24308080ab26e6fb65c4eccfadf76749bb5bfa8cb08f291320b3c21e56f0d0d0000006b4830450221008ed46aa2cf12d6d81065bfabe903670165b538f65ee9a3385e6327d80c66d3b502203124f804410527497329ec4715e18558082d489b218677bd029e7fa306a72236012103935581e52c354cd2f484fe8ed83af7a3097005b2f9c60bff71d35bd795f54b67ffffffff02408af701000000001976a914d52ad7ca9b3d096a38e752c2018e6fbc40cdf26f88ac80969800000000001976a914507b27411ccf7f16f10297de6cef3f291623eddf88ac00000000")
+
+  }
+
 
 }

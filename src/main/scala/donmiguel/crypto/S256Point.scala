@@ -40,7 +40,7 @@ class S256Point(x: Element, y: Element) extends Point(x, y, new S256Element(Secp
     return CryptoUtil.checksumBase58(Array.concat(Array(prefix), hash))
   }
 
-  def sec(compressed: Boolean): Array[Byte] = {
+  def sec(compressed: Boolean = true): Array[Byte] = {
     require(this.x != ElementNone && this.y != ElementNone)
     require(this.x.isInstanceOf[FiniteFieldElement])
     require(this.y.isInstanceOf[FiniteFieldElement])

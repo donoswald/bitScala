@@ -2,7 +2,7 @@ package donmiguel.tx
 
 import java.nio.{ByteBuffer, ByteOrder}
 
-import donmiguel.script.Script
+import donmiguel.script.{Script, ScriptElement}
 import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
 case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
@@ -31,6 +31,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     for (txIn <- ins) {
       bb.put(txIn.serialize)
     }
+
     bb.put(VarInt.toVarint(this.outs.length))
     for (txOut <- outs) {
       bb.put(txOut.serialize)
@@ -40,7 +41,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     bb.array().slice(0, bb.position())
   }
 
-  def sig_hash(input_index: Int): BigInt = {
+  def sig_hash(input_index: Int): Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(version)
@@ -74,9 +75,46 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     bb.putInt(CryptoUtil.SIGHASH_ALL)
 
     val s = bb.array().slice(0, bb.position())
-    BigInt.apply(CryptoUtil.bytesToHex(CryptoUtil.doubleSha256(s)), 16)
+    CryptoUtil.doubleSha256(s)
   }
 
+  def verify_input(index: Int): Boolean = {
+
+    val txIn = this.ins(index)
+    val script_pub = txIn.script_pubkey
+    val z = sig_hash(index)
+
+    val combined = script_pub+txIn.script_sig
+    combined.evaluate(z)
+  }
+
+  def verify: Boolean = {
+    if (this.fee < 0)
+      return false
+
+    for (i <- 0 until ins.length) {
+      if (!verify_input(i))
+        return false
+    }
+
+    return true
+  }
+
+  def sing_input(index: Int, private_key: PrivateKey): Boolean = {
+    val z = sig_hash(index)
+    val der = private_key.sign(z).der()
+
+    val sig = Array.concat(der, Array(CryptoUtil.SIGHASH_ALL.asInstanceOf[Byte]))
+    val sec = private_key.point.sec()
+
+    println("z",CryptoUtil.bytesToHex(z))
+    println("der",CryptoUtil.bytesToHex(der))
+   println("sig",CryptoUtil.bytesToHex(sig))
+    println("sec",CryptoUtil.bytesToHex(sec))
+    ins(index).script_sig = new Script(List(ScriptElement.create(sig),ScriptElement.create(sec)))
+
+    this.verify_input(index)
+  }
 
 }
 
@@ -84,8 +122,8 @@ object Tx {
   def parse(it: Iterator[Byte]): Tx = {
 
     var version = LeConverter.readLongLE(it, 4).asInstanceOf[Int]
-
     var num_in = VarInt.fromVarint(it)
+
     var ins = new Array[TxIn](num_in.toInt)
     for (i <- 0 until num_in.toInt) {
       ins(i) = TxIn.parse(it)

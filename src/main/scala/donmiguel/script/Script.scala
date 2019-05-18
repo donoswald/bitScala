@@ -3,7 +3,7 @@ package donmiguel.script
 import java.util
 
 import donmiguel.script
-import donmiguel.util.{LeConverter, VarInt}
+import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
 import scala.collection.mutable.ListBuffer
 import scala.reflect.runtime
@@ -29,7 +29,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
     val ifStack = new util.LinkedList[Boolean]()
 
     def filterDataElems(elem: ScriptElement): Boolean = {
-      if (OpCode.map.get(elem.opcode).isEmpty) {
+      if (elem.opcode.isEmpty || OpCode.map.get(elem.opcode.get).isEmpty) {
         stack.push(elem.data)
         return false // don't process this elem further
       }
@@ -45,7 +45,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
 
     val result = elems.iterator
       .filter(elem => filterDataElems(elem))
-      .map(elem => OpCode.map.get(elem.opcode).get)
+      .map(elem => OpCode.map.get(elem.opcode.get).get)
       .filter(opCode => checkIfStatement(opCode))
       .foreach(opCode => {
 
@@ -83,41 +83,45 @@ case class Script(elems: List[ScriptElement] = List.empty) {
 
       if (elem.isOpcode) {
 
-        items += Array(elem.opcode.asInstanceOf[Byte])
+        items += Array(elem.opcode.get.asInstanceOf[Byte])
         if (elem.data != null) {
           items += elem.data
         }
 
       } else if (elem.data != null) {
 
-        if (elem.opcode == null) {
+        if (elem.opcode.isEmpty) {
 
-          items += Array(elem.data.length.toByte)
+          items += LeConverter.readByteArrayLE(Array(elem.data.length.toByte).iterator, 1, 0)
           items += elem.data
 
-        } else if (elem.opcode < OpCode.OP_PUSHDATA1) {
 
-          items += Array(elem.opcode.asInstanceOf[Byte])
-          items += elem.data
+        } else {
+          val opCode = elem.opcode.get
+          if (opCode < OpCode.OP_PUSHDATA1) {
 
-        } else if (elem.opcode == OpCode.OP_PUSHDATA1) {
+            items += Array(opCode.asInstanceOf[Byte])
+            items += elem.data
 
-          items += Array(elem.opcode.asInstanceOf[Byte])
-          items += Array(elem.data.length.asInstanceOf[Byte])
-          items += elem.data
+          } else if (opCode == OpCode.OP_PUSHDATA1) {
 
-        } else if (elem.opcode == OpCode.OP_PUSHDATA2) {
+            items += Array(opCode.asInstanceOf[Byte])
+            items += Array(elem.data.length.asInstanceOf[Byte])
+            items += elem.data
 
-          items += Array(elem.opcode.asInstanceOf[Byte])
-          items += LeConverter.writeLE(elem.data.length, 2)
-          items += elem.data
+          } else if (opCode == OpCode.OP_PUSHDATA2) {
 
-        } else if (elem.opcode == OpCode.OP_PUSHDATA4) {
+            items += Array(opCode.asInstanceOf[Byte])
+            items += LeConverter.writeLE(elem.data.length, 2)
+            items += elem.data
 
-          items += Array(elem.opcode.asInstanceOf[Byte])
-          items += LeConverter.writeLE(elem.data.length, 4)
-          items += elem.data
+          } else if (opCode == OpCode.OP_PUSHDATA4) {
 
+            items += Array(opCode.asInstanceOf[Byte])
+            items += LeConverter.writeLE(elem.data.length, 4)
+            items += elem.data
+
+          }
         }
       }
 
@@ -132,6 +136,15 @@ object Script {
   val elementStart = 0x01
   val elementEnd = 0x4b
 
+  def p2pkh_script(h160: Array[Byte]): Script = {
+    new Script(List(
+      ScriptElement.create(OpCode.OP_DUP),
+      ScriptElement.create(OpCode.OP_HASH160),
+      ScriptElement.create(h160),
+      ScriptElement.create(OpCode.OP_EQUALVERIFY),
+      ScriptElement.create(OpCode.OP_CHECKSIG)
+    ))
+  }
 
   def parse(it: Iterator[Byte]): Script = {
 

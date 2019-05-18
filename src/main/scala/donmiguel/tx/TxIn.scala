@@ -5,7 +5,7 @@ import java.nio.{ByteBuffer, ByteOrder}
 import donmiguel.script.Script
 import donmiguel.util.{CryptoUtil, LeConverter}
 
-case class TxIn(prev_tx: String, prev_idx: Int, script_sig: Script = new Script(), sequence: Int = 0xffffffff) {
+case class TxIn(prev_tx: String, prev_idx: Int,var script_sig: Script = new Script(), sequence: Long = 0xffffffff) {
 
   def value: Long = {
     var tx = TxFetcher.cache(prev_tx)
@@ -25,8 +25,11 @@ case class TxIn(prev_tx: String, prev_idx: Int, script_sig: Script = new Script(
       .order(ByteOrder.BIG_ENDIAN)
       .put(this.script_sig.serialize)
       .order(ByteOrder.LITTLE_ENDIAN)
-      .putInt(this.sequence)
+      .putInt(this.sequence.toInt)
       .order(ByteOrder.BIG_ENDIAN)
+
+    println(  CryptoUtil.bytesToHex(  bb.duplicate().array().slice(0,bb.position())))
+
 
     return bb.array().slice(0, bb.position())
   }
@@ -36,12 +39,12 @@ object TxIn {
 
   def parse(it: Iterator[Byte]): TxIn = {
 
-    var tx_prev = CryptoUtil.bytesToHex(LeConverter.readByteArrayLE(it, 32, 0))
-    var prev_idx = LeConverter.readLongLE(it, 4).toInt
+    val tx_prev = CryptoUtil.bytesToHex(LeConverter.readByteArrayLE(it, 32, 0))
+    val prev_idx = LeConverter.readLongLE(it, 4).toInt
 
-    var script = Script.parse(it)
+    val script = Script.parse(it)
 
-    var sequence = LeConverter.readLongLE(it, 4).toInt
+    val sequence = LeConverter.readLongLE(it, 4)
     new TxIn(tx_prev, prev_idx, script, sequence)
 
   }
