@@ -5,6 +5,7 @@ object OpUtil extends Enumeration {
 
   // crypto
   // block state
+  //TODO
   val OP_CHECKLOCKTIMEVERIFY = Value(177)
   val OP_CHECKSEQUENCEVERIFY = Value(178)
 

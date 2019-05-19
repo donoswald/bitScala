@@ -1050,8 +1050,5 @@ object OpCode {
   val OP_NOP10 = new OpCode(185) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
   }
-
-
-
 }
 
