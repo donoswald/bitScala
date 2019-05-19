@@ -28,9 +28,6 @@ case class TxIn(prev_tx: String, prev_idx: Int,var script_sig: Script = new Scri
       .putInt(this.sequence.toInt)
       .order(ByteOrder.BIG_ENDIAN)
 
-    println(  CryptoUtil.bytesToHex(  bb.duplicate().array().slice(0,bb.position())))
-
-
     return bb.array().slice(0, bb.position())
   }
 }

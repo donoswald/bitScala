@@ -107,10 +107,6 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     val sig = Array.concat(der, Array(CryptoUtil.SIGHASH_ALL.asInstanceOf[Byte]))
     val sec = private_key.point.sec()
 
-    println("z",CryptoUtil.bytesToHex(z))
-    println("der",CryptoUtil.bytesToHex(der))
-   println("sig",CryptoUtil.bytesToHex(sig))
-    println("sec",CryptoUtil.bytesToHex(sec))
     ins(index).script_sig = new Script(List(ScriptElement.create(sig),ScriptElement.create(sec)))
 
     this.verify_input(index)

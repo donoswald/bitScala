@@ -10,17 +10,16 @@ class PrivateKey(val privKey: BigInt) {
   val point = Secp256k1.G * privKey
 
   def sign(message: String): Signature = {
-    val bytes = message.getBytes("UTF-8")
-    sign(bytes)
+    sign(message.getBytes("UTF-8"))
   }
 
   def sign(z: Array[Byte]): Signature = {
     val hash = Secp256k1.doubleDigest(z)
-
     val signer = new ECDSASigner(new HMacDSAKCalculator(new SHA256Digest()))
     val privKeyParams = new ECPrivateKeyParameters(privKey.bigInteger, Secp256k1.ecParams)
     signer.init(true, privKeyParams)
     val sigs = signer.generateSignature(hash)
+
     new Signature(BigInt.apply(sigs(0)), BigInt.apply(sigs(1)))
   }
 
