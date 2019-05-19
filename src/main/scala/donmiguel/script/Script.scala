@@ -3,10 +3,9 @@ package donmiguel.script
 import java.util
 
 import donmiguel.script
-import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
+import donmiguel.util.{LeConverter, VarInt}
 
 import scala.collection.mutable.ListBuffer
-import scala.reflect.runtime
 
 case class Script(elems: List[ScriptElement] = List.empty) {
 
@@ -128,8 +127,6 @@ case class Script(elems: List[ScriptElement] = List.empty) {
 }
 
 object Script {
-  val elementStart = 0x01
-  val elementEnd = 0x4b
 
   def p2pkh_script(h160: Array[Byte]): Script = {
     new Script(List(
