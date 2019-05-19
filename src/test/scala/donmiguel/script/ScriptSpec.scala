@@ -53,13 +53,7 @@ class ScriptSpec extends UnitSpec {
     val sec = CryptoUtil.hexToBytes("04887387e452b8eacc4acfde10d9aaf7f6d9a0f975aabb10d006e4da568744d06c61de6d95231cd89026e286df3b6ae4a894a3378e393e93a0f45b666329a0ae34")
 
 
-    val script_pub = new Script(List[ScriptElement](
-      ScriptElement.create(OpCode.OP_DUP),
-      ScriptElement.create(OpCode.OP_HASH160),
-      ScriptElement.create(hash.iterator, hash.length),
-      ScriptElement.create(OpCode.OP_EQUALVERIFY),
-      ScriptElement.create(OpCode.OP_CHECKSIG)
-    ))
+    val script_pub=Script.p2pkh_script(hash)
 
     val script_sig = new Script(List[ScriptElement](
       ScriptElement.create(sig.iterator, sig.length),
