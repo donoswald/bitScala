@@ -116,7 +116,6 @@ object OpCode {
       opValue == OpCode.OP_ENDIF
   }
 
-
   val OP_1NEGATE = new OpCode(79) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(-1))

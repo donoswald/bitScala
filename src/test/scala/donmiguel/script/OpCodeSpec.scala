@@ -854,10 +854,10 @@ class OpCodeSpec extends UnitSpec {
     var list = new util.LinkedList[Array[Byte]]()
     assert(OpCode.OP_HASH160.execute(list) == false)
 
-    list.add("x".getBytes(Charset.forName("UTF-8")))
+    list.add("hello world".getBytes(Charset.forName("UTF-8")))
     assert(OpCode.OP_HASH160.execute(list) == true)
     assert(list.size() == 1)
-    assert(CryptoUtil.bytesToHex(list.get(0)) == "4e944b03e84fdc97f2fb68cb62b73d000ef5be71")
+    assert(CryptoUtil.bytesToHex(list.get(0)) == "d7d5ee7824ff93f94c3055af9382c86c68b5ca92")
 
   }
 
@@ -912,13 +912,13 @@ class OpCodeSpec extends UnitSpec {
     val sec2 = CryptoUtil.hexToBytes("03b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb71")
 
     val stack = new util.LinkedList[Array[Byte]]()
-    stack.push(Array(0x00))
+    stack.push(OpCode.encode(0))
     stack.push(sig1)
     stack.push(sig2)
-    stack.push(Array(0x02))
+    stack.push(OpCode.encode(2))
     stack.push(sec1)
     stack.push(sec2)
-    stack.push(Array(0x02))
+    stack.push(OpCode.encode(2))
 
     assert(OpCode.OP_CHECKMULTISIG.execute(stack, z) == true)
     assert(stack.size() == 1)
