@@ -41,7 +41,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     bb.array().slice(0, bb.position())
   }
 
-  def sig_hash(input_index: Int): Array[Byte] = {
+  def sig_hash(input_index: Int, redeem_script: Option[Script] = Option.empty): Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(version)
@@ -54,7 +54,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
       var script: Option[Script] = None
 
       if (i == input_index) {
-        script = Some(tx_in.script_pubkey)
+        script = redeem_script.orElse(Some(tx_in.script_pubkey))
       }
 
       bb.put(new TxIn(
@@ -82,8 +82,15 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
 
     val txIn = this.ins(index)
     val script_pub = txIn.script_pubkey
-    val z = sig_hash(index)
 
+    var redeem_script: Option[Script] = None
+    if (script_pub.is_p2sh_script_pubkey) {
+      val elem = txIn.script_sig.elems.last
+      val raw_redeem = Array.concat(VarInt.toVarint(elem.data.length), elem.data)
+      redeem_script = Some(Script.parse(raw_redeem.iterator))
+    }
+
+    val z = sig_hash(index, redeem_script)
     val combined = script_pub+txIn.script_sig
     combined.evaluate(z)
   }

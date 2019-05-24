@@ -42,23 +42,29 @@ case class Script(elems: List[ScriptElement] = List.empty) {
       !ifStack.contains(false)
     }
 
-    val result = elems.iterator
-      .filter(elem => filterDataElems(elem))
-      .map(elem => OpCode.map.get(elem.opcode.get).get)
-      .filter(opCode => checkIfStatement(opCode))
-      .foreach(opCode => {
+    val elems = this.elems.to[ListBuffer]
 
-        if (opCode == OpCode.OP_RETURN) {
-          return false // ends the loop
-        } else if (opCode.isInstanceOf[SimpleOpCode]) {
-          if (!opCode.asInstanceOf[SimpleOpCode].execute(stack)) return false // ends the loop
-        } else if (opCode.isInstanceOf[AltstackOpCode]) {
-          if (!opCode.asInstanceOf[AltstackOpCode].execute(stack, altStack)) return false // ends the loop
-        } else if (opCode.isInstanceOf[SignableOpCode]) {
-          if (!opCode.asInstanceOf[SignableOpCode].execute(stack, z)) return false // ends the loop
-        }
+    while (!elems.isEmpty) {
 
-      })
+      val e = elems.remove(0)
+      Option.apply(e)
+        .filter(e => filterDataElems(e))
+        .map(e => OpCode.map.get(e.opcode.get).get)
+        .filter(op => checkIfStatement(op))
+        .map(op => {
+          if (op == OpCode.OP_RETURN) {
+            return false // ends the loop
+          } else if (op.isInstanceOf[SimpleOpCode]) {
+            if (!op.asInstanceOf[SimpleOpCode].execute(stack)) return false // ends the loop
+          } else if (op.isInstanceOf[AltstackOpCode]) {
+            if (!op.asInstanceOf[AltstackOpCode].execute(stack, altStack)) return false // ends the loop
+          } else if (op.isInstanceOf[SignableOpCode]) {
+            if (!op.asInstanceOf[SignableOpCode].execute(stack, z)) return false // ends the loop
+          }
+        })
+
+    }
+    
 
     if (stack.size() == 0)
       return false
@@ -123,6 +129,24 @@ case class Script(elems: List[ScriptElement] = List.empty) {
     return items.flatten.toArray
   }
 
+
+  def is_p2pkh_script_pubkey: Boolean = {
+    //Returns whether this follows the OP_DUP OP_HASH160 <20 byte hash> OP_EQUALVERIFY OP_CHECKSIG pattern.'''
+    this.elems.size == 5 &&
+      this.elems(0).opcode.getOrElse(None) == OpCode.OP_DUP.code &&
+      this.elems(1).opcode.getOrElse(None) == OpCode.OP_HASH160.code &&
+      this.elems(2).data.length == 20 &&
+      this.elems(3).opcode.getOrElse(None) == OpCode.OP_EQUALVERIFY.code &&
+      this.elems(4).opcode.getOrElse(None) == OpCode.OP_CHECKSIG.code
+  }
+
+  def is_p2sh_script_pubkey: Boolean = {
+    // returns whether this follows the OP_HASH160 <20 byte hash> OP_EQUAL pattern
+    this.elems.size == 3 &&
+      this.elems(0).opcode.getOrElse(None) == OpCode.OP_HASH160.code &&
+      this.elems(1).data.length == 20 &&
+      this.elems(2).opcode.getOrElse(None) == OpCode.OP_EQUAL.code
+  }
 
 }
 
