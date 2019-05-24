@@ -84,7 +84,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     val script_pub = txIn.script_pubkey
 
     var redeem_script: Option[Script] = None
-    if (script_pub.is_p2sh_script_pubkey) {
+    if (Script.is_p2sh_script_pubkey(script_pub.elems)) {
       val elem = txIn.script_sig.elems.last
       val raw_redeem = Array.concat(VarInt.toVarint(elem.data.length), elem.data)
       redeem_script = Some(Script.parse(raw_redeem.iterator))

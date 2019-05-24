@@ -23,7 +23,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
 
   def evaluate(z: Array[Byte]): Boolean = {
 
-    val stack = new util.LinkedList[Array[Byte]]()
+    var stack = new util.LinkedList[Array[Byte]]()
     val altStack = new util.LinkedList[Array[Byte]]()
     val ifStack = new util.LinkedList[Boolean]()
 
@@ -63,8 +63,25 @@ case class Script(elems: List[ScriptElement] = List.empty) {
           }
         })
 
+      if (Script.is_p2sh_script_pubkey(elems.toList)) {
+        elems.remove(0) // opHash160
+        val h160 = elems.remove(0)
+        elems.remove(0) // opEqual
+
+        if (!OpCode.OP_HASH160.execute(stack)) {
+          return false
+        }
+        stack.push(h160.data)
+        if (!OpCode.OP_EQUAL.execute(stack)) {
+          return false
+        }
+        if(!OpCode.OP_VERIFY.execute(stack)){
+          return false
+        }
+      }
+
     }
-    
+
 
     if (stack.size() == 0)
       return false
@@ -140,14 +157,6 @@ case class Script(elems: List[ScriptElement] = List.empty) {
       this.elems(4).opcode.getOrElse(None) == OpCode.OP_CHECKSIG.code
   }
 
-  def is_p2sh_script_pubkey: Boolean = {
-    // returns whether this follows the OP_HASH160 <20 byte hash> OP_EQUAL pattern
-    this.elems.size == 3 &&
-      this.elems(0).opcode.getOrElse(None) == OpCode.OP_HASH160.code &&
-      this.elems(1).data.length == 20 &&
-      this.elems(2).opcode.getOrElse(None) == OpCode.OP_EQUAL.code
-  }
-
 }
 
 object Script {
@@ -160,6 +169,14 @@ object Script {
       ScriptElement.create(OpCode.OP_EQUALVERIFY),
       ScriptElement.create(OpCode.OP_CHECKSIG)
     ))
+  }
+
+  def is_p2sh_script_pubkey(elems: List[ScriptElement]): Boolean = {
+    // returns whether this follows the OP_HASH160 <20 byte hash> OP_EQUAL pattern
+    elems.size == 3 &&
+      elems(0).opcode.getOrElse(None) == OpCode.OP_HASH160.code &&
+      elems(1).data.length == 20 &&
+      elems(2).opcode.getOrElse(None) == OpCode.OP_EQUAL.code
   }
 
   def parse(it: Iterator[Byte]): Script = {
