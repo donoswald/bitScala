@@ -40,6 +40,10 @@ class VarIntSpec extends UnitSpec {
     assertEquals(0xCAFEBABEDEADBEEFL, VarInt.fromVarint(a.iterator))
   }
 
+  it should "515" in {
+    assert(515L == VarInt.fromVarint(CryptoUtil.hexToBytes("fd0302").iterator))
+  }
+
 
   def assertEquals(x: Any, y: Any) = {
     assert(x == y)

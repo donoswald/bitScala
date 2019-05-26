@@ -1,5 +1,9 @@
 package donmiguel.script
 
+/**
+  * @todo implement these opcodes
+  * @deprecated
+  */
 object OpUtil extends Enumeration {
 
 

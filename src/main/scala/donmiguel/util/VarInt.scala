@@ -1,5 +1,11 @@
 package donmiguel.util
 
+
+/**
+  *Implementation of Varint as described by
+  *
+  * @see https://learnmeabitcoin.com/glossary/varint
+  */
 object VarInt {
 
   def fromVarint(it: Iterator[Byte]): Long = {

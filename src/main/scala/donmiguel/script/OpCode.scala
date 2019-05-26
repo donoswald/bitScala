@@ -4,7 +4,6 @@ import java.nio.ByteBuffer
 import java.util
 
 import donmiguel.crypto.S256Point
-import donmiguel.script.OpUtil.Value
 import donmiguel.tx.Signature
 import donmiguel.util.CryptoUtil
 

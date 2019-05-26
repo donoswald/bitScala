@@ -22,7 +22,6 @@ class CryptoUtilSpec extends UnitSpec {
 
   it should "hash 160" in {
 
-    //TODO check double hashing
     assert(CryptoUtil.bytesToHex(CryptoUtil.sha256("x".getBytes(Charset.forName("UTF-8")))) == "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881")
     assert(CryptoUtil.bytesToHex(CryptoUtil.ripemd160(CryptoUtil.sha256("x".getBytes(Charset.forName("UTF-8"))))) == "4e944b03e84fdc97f2fb68cb62b73d000ef5be71")
     assert(CryptoUtil.bytesToHex(CryptoUtil.hash160("x".getBytes(Charset.forName("UTF-8")))) == "4e944b03e84fdc97f2fb68cb62b73d000ef5be71")
@@ -31,7 +30,6 @@ class CryptoUtilSpec extends UnitSpec {
 
   it should "double sha 256" in {
 
-    //TODO check double hashing
     assert(CryptoUtil.bytesToHex(CryptoUtil.sha256("x".getBytes(Charset.forName("UTF-8")))) == "2d711642b726b04401627ca9fbac32f5c8530fb1903cc4db02258717921a4881")
     assert(CryptoUtil.bytesToHex(CryptoUtil.sha256(CryptoUtil.sha256("x".getBytes("UTF-8")))) == "0a325ca303eb3014c43ae004970f343634db176fa1697bcc8c9efac94626488d")
     assert(CryptoUtil.bytesToHex(CryptoUtil.doubleSha256("x".getBytes(Charset.forName("UTF-8")))) == "0a325ca303eb3014c43ae004970f343634db176fa1697bcc8c9efac94626488d")

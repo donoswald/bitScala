@@ -92,14 +92,4 @@ object CryptoUtil {
     encodeBase58(Array.concat(input, hash160(input).slice(0, 4)))
   }
 
-  def h160_to_p2pkh_address(h160: Array[Byte], testnet: Boolean = false): String = {
-    val prefix = if (testnet) 0x6f.toByte else 0x00.toByte
-    encode_base58_checksum(Array.concat(Array(prefix), h160))
-  }
-
-  def h160_to_p2sh_address(h160: Array[Byte], testnet: Boolean = false): String = {
-    val prefix = if (testnet) 0xc4.toByte else 0x05.toByte
-    encode_base58_checksum(Array.concat(Array(prefix), h160))
-  }
-
 }

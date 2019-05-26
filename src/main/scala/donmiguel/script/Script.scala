@@ -46,8 +46,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
 
     while (!elems.isEmpty) {
 
-      val e = elems.remove(0)
-      Option.apply(e)
+      Option.apply(elems.remove(0))
         .filter(e => filterDataElems(e))
         .map(e => OpCode.map.get(e.opcode.get).get)
         .filter(op => checkIfStatement(op))
@@ -145,18 +144,6 @@ case class Script(elems: List[ScriptElement] = List.empty) {
     }
     return items.flatten.toArray
   }
-
-
-  def is_p2pkh_script_pubkey: Boolean = {
-    //Returns whether this follows the OP_DUP OP_HASH160 <20 byte hash> OP_EQUALVERIFY OP_CHECKSIG pattern.'''
-    this.elems.size == 5 &&
-      this.elems(0).opcode.getOrElse(None) == OpCode.OP_DUP.code &&
-      this.elems(1).opcode.getOrElse(None) == OpCode.OP_HASH160.code &&
-      this.elems(2).data.length == 20 &&
-      this.elems(3).opcode.getOrElse(None) == OpCode.OP_EQUALVERIFY.code &&
-      this.elems(4).opcode.getOrElse(None) == OpCode.OP_CHECKSIG.code
-  }
-
 }
 
 object Script {
