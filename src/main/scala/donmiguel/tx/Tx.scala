@@ -41,7 +41,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     bb.array().slice(0, bb.position())
   }
 
-  def sig_hash(input_index: Int, redeem_script: Option[Script] = Option.empty): Array[Byte] = {
+  def sigHash(input_index: Int, redeem_script: Option[Script] = Option.empty): Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(version)
@@ -58,8 +58,8 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
       }
 
       bb.put(new TxIn(
-        tx_in.prev_tx,
-        tx_in.prev_idx,
+        tx_in.prevTx,
+        tx_in.prevIdx,
         script.orNull,
         tx_in.sequence
       ).serialize)
@@ -78,20 +78,20 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     CryptoUtil.doubleSha256(s)
   }
 
-  def verify_input(index: Int): Boolean = {
+  def verifyInput(index: Int): Boolean = {
 
     val txIn = this.ins(index)
     val script_pub = txIn.script_pubkey
 
     var redeem_script: Option[Script] = None
     if (Script.is_p2sh_script_pubkey(script_pub.elems)) {
-      val elem = txIn.script_sig.elems.last
+      val elem = txIn.scriptSig.elems.last
       val raw_redeem = Array.concat(VarInt.toVarint(elem.data.length), elem.data)
       redeem_script = Some(Script.parse(raw_redeem.iterator))
     }
 
-    val z = sig_hash(index, redeem_script)
-    val combined = script_pub+txIn.script_sig
+    val z = sigHash(index, redeem_script)
+    val combined = script_pub+txIn.scriptSig
     combined.evaluate(z)
   }
 
@@ -100,23 +100,33 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
       return false
 
     for (i <- 0 until ins.length) {
-      if (!verify_input(i))
+      if (!verifyInput(i))
         return false
     }
 
     return true
   }
 
-  def sing_input(index: Int, private_key: PrivateKey): Boolean = {
-    val z = sig_hash(index)
-    val der = private_key.sign(z).der()
+  def singInput(index: Int, privateKey: PrivateKey): Boolean = {
+    val z = sigHash(index)
+    val der = privateKey.sign(z).der()
 
     val sig = Array.concat(der, Array(CryptoUtil.SIGHASH_ALL.asInstanceOf[Byte]))
-    val sec = private_key.point.sec()
+    val sec = privateKey.point.sec()
 
-    ins(index).script_sig = new Script(List(ScriptElement.create(sig),ScriptElement.create(sec)))
+    ins(index).scriptSig = new Script(List(ScriptElement.create(sig),ScriptElement.create(sec)))
 
-    this.verify_input(index)
+    this.verifyInput(index)
+  }
+
+  def isCoinbase: Boolean = {
+    if (this.ins.length != 1)
+      return false
+    if (this.ins(0).prevTx != CryptoUtil.bytesToHex(Array.ofDim(32)))
+      return false
+    if (this.ins(0).prevIdx != 0xffffffff)
+      return false
+    true
   }
 
 }

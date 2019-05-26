@@ -5,25 +5,25 @@ import java.nio.{ByteBuffer, ByteOrder}
 import donmiguel.script.Script
 import donmiguel.util.{CryptoUtil, LeConverter}
 
-case class TxIn(prev_tx: String, prev_idx: Int,var script_sig: Script = new Script(), sequence: Long = 0xffffffff) {
+case class TxIn(prevTx: String, prevIdx: Int, var scriptSig: Script = new Script(), sequence: Long = 0xffffffff) {
 
   def value: Long = {
-    var tx = TxFetcher.cache(prev_tx)
-    tx.outs(prev_idx).amount
+    var tx = TxFetcher.cache(prevTx)
+    tx.outs(prevIdx).amount
   }
 
   def script_pubkey: Script = {
-    var tx = TxFetcher.cache(prev_tx)
-    tx.outs(prev_idx).script_pubkey
+    var tx = TxFetcher.cache(prevTx)
+    tx.outs(prevIdx).scriptPubkey
   }
 
   def serialize: Array[Byte] = {
     var bb = ByteBuffer.allocate(999999999)
-      .put(CryptoUtil.hexToBytes(this.prev_tx).reverse)
+      .put(CryptoUtil.hexToBytes(this.prevTx).reverse)
       .order(ByteOrder.LITTLE_ENDIAN)
-      .putInt(prev_idx)
+      .putInt(prevIdx)
       .order(ByteOrder.BIG_ENDIAN)
-      .put(this.script_sig.serialize)
+      .put(this.scriptSig.serialize)
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(this.sequence.toInt)
       .order(ByteOrder.BIG_ENDIAN)

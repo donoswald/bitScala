@@ -5,13 +5,13 @@ import java.nio.{ByteBuffer, ByteOrder}
 import donmiguel.script.Script
 import donmiguel.util.LeConverter
 
-case class TxOut(amount: Long, script_pubkey: Script) {
+case class TxOut(amount: Long, scriptPubkey: Script) {
   def serialize: Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
       .putLong(this.amount.longValue())
       .order(ByteOrder.BIG_ENDIAN)
-      .put(this.script_pubkey.serialize)
+      .put(this.scriptPubkey.serialize)
     bb.array().slice(0, bb.position())
   }
 }

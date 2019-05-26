@@ -74,7 +74,7 @@ class TxSpec extends UnitSpec {
     var txOpt = TxFetcher.cache.get("452c629d67e41baec3ac6f04fe744b4b9617f8f859c63b3002f8684e7a4fee03")
     var tx = txOpt.get
 
-    assert(tx.sig_hash(0).deep == CryptoUtil.hexToBytes("27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6").deep)
+    assert(tx.sigHash(0).deep == CryptoUtil.hexToBytes("27e0c5994dec7824e56dec6b2fcb342eb7cdb0d0957c2fce9882f715e85d81a6").deep)
   }
 
   it should "sign_input" in {
@@ -87,7 +87,7 @@ class TxSpec extends UnitSpec {
 
     val script_sig = "6c4930460221002630fa333d2bdca1fb76c2ce0442d98edcf78bb888d9b01553421cd5b3ab7cea0221000dbf93385c12ca2a57e466086886c75b3b9c3991063bf0a59e36ebabafb45688012103935581e52c354cd2f484fe8ed83af7a3097005b2f9c60bff71d35bd795f54b67"
 
-    assert (tx.sing_input(0,private_key)==true )
+    assert (tx.singInput(0,private_key)==true )
     assert(CryptoUtil.bytesToHex(tx.serialize) == tx_ser.replace("00ff", script_sig + "ff"))
 
   }
@@ -102,5 +102,11 @@ class TxSpec extends UnitSpec {
     val tx_raw = CryptoUtil.hexToBytes("0100000001868278ed6ddfb6c1ed3ad5f8181eb0c7a385aa0836f01d5e4789e6bd304d87221a000000db00483045022100dc92655fe37036f47756db8102e0d7d5e28b3beb83a8fef4f5dc0559bddfb94e02205a36d4e4e6c7fcd16658c50783e00c341609977aed3ad00937bf4ee942a8993701483045022100da6bee3c93766232079a01639d07fa869598749729ae323eab8eef53577d611b02207bef15429dcadce2121ea07f233115c6f09034c0be68db99980b9a6c5e75402201475221022626e955ea6ea6d98850c994f9107b036b1334f18ca8830bfff1295d21cfdb702103b287eaf122eea69030a0e9feed096bed8045c8b98bec453e1ffac7fbdbd4bb7152aeffffffff04d3b11400000000001976a914904a49878c0adfc3aa05de7afad2cc15f483a56a88ac7f400900000000001976a914418327e3f3dda4cf5b9089325a4b95abdfa0334088ac722c0c00000000001976a914ba35042cfe9fc66fd35ac2224eebdafd1028ad2788acdc4ace020000000017a91474d691da1574e6b3c192ecfb52cc8984ee7b6c568700000000")
     val tx = Tx.parse(tx_raw.iterator)
     assert(tx.verify == true)
+  }
+
+  it should "isCoinbase" in {
+    val tx_raw= CryptoUtil.hexToBytes("01000000010000000000000000000000000000000000000000000000000000000000000000ffffffff5e03d71b07254d696e656420627920416e74506f6f6c20626a31312f4542312f4144362f43205914293101fabe6d6d678e2c8c34afc36896e7d9402824ed38e856676ee94bfdb0c6c4bcd8b2e5666a0400000000000000c7270000a5e00e00ffffffff01faf20b58000000001976a914338c84849423992471bffb1a54a8d9b1d69dc28a88ac00000000")
+    val tx = Tx.parse(tx_raw.iterator)
+    assert(tx.isCoinbase)
   }
 }
