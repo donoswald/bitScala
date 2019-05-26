@@ -35,31 +35,44 @@ case class Script(elems: List[ScriptElement] = List.empty) {
       true
     }
 
-    def checkIfStatement(opCode: OpCode): Boolean = {
-      if (opCode.isInstanceOf[IfOpCode]) {
-        return opCode.asInstanceOf[IfOpCode].execute(stack, ifStack)
+    def checkIfStatement(op: OpCode): Boolean = {
+
+      op match {
+        case ifStatement: IfOpCode =>
+          return ifStatement.execute(stack, ifStack)
+
+        case default: OpCode =>
       }
+
       !ifStack.contains(false)
     }
 
     val elems = this.elems.to[ListBuffer]
 
-    while (!elems.isEmpty) {
+    while (elems.nonEmpty) {
 
       Option.apply(elems.remove(0))
         .filter(e => filterDataElems(e))
-        .map(e => OpCode.map.get(e.opcode.get).get)
+        .map(e => OpCode.map(e.opcode.get))
         .filter(op => checkIfStatement(op))
-        .map(op => {
+        .foreach(op => {
+
           if (op == OpCode.OP_RETURN) {
             return false // ends the loop
-          } else if (op.isInstanceOf[SimpleOpCode]) {
-            if (!op.asInstanceOf[SimpleOpCode].execute(stack)) return false // ends the loop
-          } else if (op.isInstanceOf[AltstackOpCode]) {
-            if (!op.asInstanceOf[AltstackOpCode].execute(stack, altStack)) return false // ends the loop
-          } else if (op.isInstanceOf[SignableOpCode]) {
-            if (!op.asInstanceOf[SignableOpCode].execute(stack, z)) return false // ends the loop
           }
+
+          op match {
+            case simple: SimpleOpCode =>
+              if (!simple.execute(stack))
+                return false
+            case alt: AltstackOpCode =>
+              if (!alt.execute(stack, altStack))
+                return false
+            case signable: SignableOpCode =>
+              if (!signable.execute(stack, z))
+                return false
+          }
+
         })
 
       if (Script.isP2shScriptPubkey(elems.toList)) {

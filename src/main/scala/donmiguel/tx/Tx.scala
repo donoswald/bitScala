@@ -5,21 +5,21 @@ import java.nio.{ByteBuffer, ByteOrder}
 import donmiguel.script.{Script, ScriptElement}
 import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
-case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
+case class Tx(version: Int, numInputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
   def fee: Long = {
 
-    var sum_in: Long = 0
-    var sum_out: Long = 0
+    var sumIn: Long = 0
+    var sumOut: Long = 0
 
     for (in <- ins) {
-      sum_in += in.value
+      sumIn += in.value
     }
 
     for (out <- outs) {
-      sum_out += out.amount
+      sumOut += out.amount
     }
 
-    return sum_in - sum_out
+    return sumIn - sumOut
   }
 
   def serialize: Array[Byte] = {
@@ -41,7 +41,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     bb.array().slice(0, bb.position())
   }
 
-  def sigHash(input_index: Int, redeem_script: Option[Script] = Option.empty): Array[Byte] = {
+  def sigHash(inputIdx: Int, redeemScript: Option[Script] = Option.empty): Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(version)
@@ -49,19 +49,19 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
       .put(VarInt.toVarint(this.ins.length))
 
     for (i <- 0 until this.ins.length) {
-      val tx_in = this.ins(i)
+      val txIn = this.ins(i)
 
       var script: Option[Script] = None
 
-      if (i == input_index) {
-        script = redeem_script.orElse(Some(tx_in.scriptPubkey))
+      if (i == inputIdx) {
+        script = redeemScript.orElse(Some(txIn.scriptPubkey))
       }
 
       bb.put(new TxIn(
-        tx_in.prevTx,
-        tx_in.prevIdx,
+        txIn.prevTx,
+        txIn.prevIdx,
         script.orNull,
-        tx_in.sequence
+        txIn.sequence
       ).serialize)
 
     }

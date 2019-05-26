@@ -36,13 +36,13 @@ object TxIn {
 
   def parse(it: Iterator[Byte]): TxIn = {
 
-    val tx_prev = CryptoUtil.bytesToHex(LeConverter.readByteArrayLE(it, 32, 0))
-    val prev_idx = LeConverter.readLongLE(it, 4).toInt
+    val txPrev = CryptoUtil.bytesToHex(LeConverter.readByteArrayLE(it, 32, 0))
+    val prevIdx = LeConverter.readLongLE(it, 4).toInt
 
     val script = Script.parse(it)
 
     val sequence = LeConverter.readLongLE(it, 4)
-    new TxIn(tx_prev, prev_idx, script, sequence)
+    new TxIn(txPrev, prevIdx, script, sequence)
 
   }
 }
