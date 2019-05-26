@@ -7,7 +7,8 @@ object LeConverter {
 
     var result = 0L
     for (i <- 0 until length) {
-      result |= (it.next() & 0xffl) << i * 8
+      if (it.hasNext)
+        result |= (it.next() & 0xffl) << i * 8
     }
     result
 

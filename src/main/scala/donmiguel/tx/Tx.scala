@@ -54,7 +54,7 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
       var script: Option[Script] = None
 
       if (i == input_index) {
-        script = redeem_script.orElse(Some(tx_in.script_pubkey))
+        script = redeem_script.orElse(Some(tx_in.scriptPubkey))
       }
 
       bb.put(new TxIn(
@@ -81,10 +81,10 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
   def verifyInput(index: Int): Boolean = {
 
     val txIn = this.ins(index)
-    val script_pub = txIn.script_pubkey
+    val script_pub = txIn.scriptPubkey
 
     var redeem_script: Option[Script] = None
-    if (Script.is_p2sh_script_pubkey(script_pub.elems)) {
+    if (Script.isP2shScriptPubkey(script_pub.elems)) {
       val elem = txIn.scriptSig.elems.last
       val raw_redeem = Array.concat(VarInt.toVarint(elem.data.length), elem.data)
       redeem_script = Some(Script.parse(raw_redeem.iterator))
@@ -127,6 +127,17 @@ case class Tx(version: Int, num_inputs: Long, ins: Array[TxIn], num_outs: Long, 
     if (this.ins(0).prevIdx != 0xffffffff)
       return false
     true
+  }
+
+  def coinbaseHeight: Int = {
+    if (!isCoinbase)
+      return -1
+
+    if (this.ins(0).scriptSig.elems.size == 0)
+      return -1
+
+    LeConverter.readLongLE(this.ins(0).scriptSig.elems(0).data.iterator, 4).toInt
+
   }
 
 }

@@ -12,7 +12,7 @@ case class TxIn(prevTx: String, prevIdx: Int, var scriptSig: Script = new Script
     tx.outs(prevIdx).amount
   }
 
-  def script_pubkey: Script = {
+  def scriptPubkey: Script = {
     var tx = TxFetcher.cache(prevTx)
     tx.outs(prevIdx).scriptPubkey
   }

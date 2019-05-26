@@ -42,7 +42,7 @@ class TxInSpec extends UnitSpec {
     val fetcher = TxFetcher.load("tx.cache")
 
     var txIn = TxIn("d1c789a9c60383bf715f3f6ad9d14b91fe55f3deb369fe5d9280cb1a01793f81", 0)
-    assert(txIn.script_pubkey.serialize.deep == CryptoUtil.hexToBytes("1976a914a802fc56c704ce87c42d7c92eb75e7896bdc41ae88ac").deep)
+    assert(txIn.scriptPubkey.serialize.deep == CryptoUtil.hexToBytes("1976a914a802fc56c704ce87c42d7c92eb75e7896bdc41ae88ac").deep)
   }
 
   it should "serialize txIn" in {

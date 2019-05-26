@@ -62,7 +62,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
           }
         })
 
-      if (Script.is_p2sh_script_pubkey(elems.toList)) {
+      if (Script.isP2shScriptPubkey(elems.toList)) {
         elems.remove(0) // opHash160
         val h160 = elems.remove(0)
         elems.remove(0) // opEqual
@@ -158,7 +158,7 @@ object Script {
     ))
   }
 
-  def is_p2sh_script_pubkey(elems: List[ScriptElement]): Boolean = {
+  def isP2shScriptPubkey(elems: List[ScriptElement]): Boolean = {
     // returns whether this follows the OP_HASH160 <20 byte hash> OP_EQUAL pattern
     elems.size == 3 &&
       elems(0).opcode.getOrElse(None) == OpCode.OP_HASH160.code &&
