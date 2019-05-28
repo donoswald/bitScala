@@ -1,5 +1,7 @@
 # BitScala
 
+![BitScala](bitscala.png)
+
 ## Reference
 
 The BitScala library is the implementation in Scala of the main features of Bitcoin protocol.
