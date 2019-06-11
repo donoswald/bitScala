@@ -30,7 +30,7 @@ trait SignableOpCode {
 }
 
 object OpCode {
-  var map = Map[Int, OpCode]()
+   var map = Map[Int, OpCode]()
 
   val NEGATIVE_ZERO = 0x80.asInstanceOf[Byte]
   val MAX_BYTE_AS_INT = 0x00ff
@@ -120,10 +120,12 @@ object OpCode {
       stack.push(encode(-1))
       true
     }
+    override def toString: String =  "OP_1NEGATE" +"("+this.code+")"
   }
 
   val OP_RESERVED = new OpCode(80) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+    override def toString: String =  "OP_RESERVED" +"("+this.code+")"
   }
 
   val OP_1 = new OpCode(81) with SimpleOpCode {
@@ -131,6 +133,7 @@ object OpCode {
       stack.push(encode(1))
       true
     }
+    override def toString: String =  "OP_1" +"("+this.code+")"
   }
 
   val OP_2 = new OpCode(82) with SimpleOpCode {
@@ -138,106 +141,125 @@ object OpCode {
       stack.push(encode(2))
       true
     }
+    override def toString: String =  "OP_2" +"("+this.code+")"
   }
   val OP_3 = new OpCode(83) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(3))
       true
     }
+    override def toString: String =  "OP_3" +"("+this.code+")"
   }
   val OP_4 = new OpCode(84) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(4))
       true
     }
+    override def toString: String =  "OP_4" +"("+this.code+")"
   }
   val OP_5 = new OpCode(85) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(5))
       true
     }
+    override def toString: String =  "OP_5" +"("+this.code+")"
   }
   val OP_6 = new OpCode(86) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(6))
       true
     }
+    override def toString: String =  "OP_6" +"("+this.code+")"
   }
   val OP_7 = new OpCode(87) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(7))
       true
     }
+    override def toString: String =  "OP_7" +"("+this.code+")"
   }
   val OP_8 = new OpCode(88) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(8))
       true
     }
+    override def toString: String =  "OP_8" +"("+this.code+")"
   }
   val OP_9 = new OpCode(89) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(9))
       true
     }
+    override def toString: String =  "OP_9" +"("+this.code+")"
   }
   val OP_10 = new OpCode(90) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(10))
       true
     }
+    override def toString: String =  "OP_10" +"("+this.code+")"
   }
   val OP_11 = new OpCode(91) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(11))
       true
     }
+    override def toString: String =  "OP_11" +"("+this.code+")"
   }
   val OP_12 = new OpCode(92) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(12))
       true
     }
+    override def toString: String =  "OP_12" +"("+this.code+")"
   }
   val OP_13 = new OpCode(93) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(13))
       true
     }
+    override def toString: String =  "OP_13" +"("+this.code+")"
   }
   val OP_14 = new OpCode(94) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(14))
       true
     }
+    override def toString: String =  "OP_14" +"("+this.code+")"
   }
   val OP_15 = new OpCode(95) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(15))
       true
     }
+    override def toString: String =  "OP_15" +"("+this.code+")"
   }
   val OP_16 = new OpCode(96) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(16))
       true
     }
+    override def toString: String =  "OP_16" +"("+this.code+")"
   }
   // control
   val OP_NOP = new OpCode(97) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP" +"("+this.code+")"
   }
 
   val OP_VER = new OpCode(98) with SimpleOpCode{
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+    override def toString: String =  "OP_VER" +"("+this.code+")"
   }
 
   val OP_VERIF = new OpCode(101) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+    override def toString: String =  "OP_VERIF" +"("+this.code+")"
   }
 
   val OP_VERNOTIF = new OpCode(102) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+    override def toString: String =  "OP_VERNOTIF" +"("+this.code+")"
   }
 
 
@@ -251,6 +273,7 @@ object OpCode {
         return false
       true
     }
+    override def toString: String =  "OP_VERIFY" +"("+this.code+")"
   }
 
   val OP_IF = new OpCode(99) with IfOpCode {
@@ -267,6 +290,7 @@ object OpCode {
       ifStack.add(toBool(stack.poll()))
       false
     }
+    override def toString: String =  "OP_IF" +"("+this.code+")"
   }
   val OP_NOTIF = new OpCode(100) with IfOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean = {
@@ -282,6 +306,7 @@ object OpCode {
       ifStack.add(!toBool(stack.poll()))
       false
     }
+    override def toString: String =  "OP_NOTIF" +"("+this.code+")"
   }
   val OP_ELSE = new OpCode(103) with IfOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean = {
@@ -291,6 +316,7 @@ object OpCode {
       ifStack.add(!ifStack.poll())
       false
     }
+    override def toString: String =  "OP_ELSE" +"("+this.code+")"
   }
   val OP_ENDIF = new OpCode(104) with IfOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]], ifStack: util.LinkedList[Boolean]): Boolean = {
@@ -300,10 +326,12 @@ object OpCode {
       ifStack.poll()
       false
     }
+    override def toString: String =  "OP_ENDIF" +"("+this.code+")"
   }
 
   val OP_RETURN = new OpCode(106) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+    override def toString: String =  "OP_RETURN" +"("+this.code+")"
   }
 
   // stack ops
@@ -314,6 +342,7 @@ object OpCode {
       altstack.push(stack.pop())
       true
     }
+    override def toString: String =  "OP_TOALTSTACK" +"("+this.code+")"
   }
   val OP_FROMALTSTACK = new OpCode(108) with AltstackOpCode {
     def execute(stack: util.LinkedList[Array[Byte]], altstack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -322,7 +351,7 @@ object OpCode {
       stack.push(altstack.pop())
       true
     }
-
+    override def toString: String =  "OP_FROMALTSTACK" +"("+this.code+")"
   }
   val OP_2DROP = new OpCode(109) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -332,6 +361,7 @@ object OpCode {
       stack.pop()
       true
     }
+    override def toString: String =  "OP_2DROP" +"("+this.code+")"
   }
   val OP_2DUP = new OpCode(110) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -343,6 +373,7 @@ object OpCode {
       stack.push(e0)
       true
     }
+    override def toString: String =  "OP_2DUP" +"("+this.code+")"
   }
   val OP_3DUP = new OpCode(111) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -356,6 +387,7 @@ object OpCode {
       stack.push(e0)
       true
     }
+    override def toString: String =  "OP_3DUP" +"("+this.code+")"
   }
   val OP_2OVER = new OpCode(112) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -367,6 +399,7 @@ object OpCode {
       stack.push(e2)
       true
     }
+    override def toString: String =  "OP_2OVER" +"("+this.code+")"
   }
 
   val OP_2ROT = new OpCode(113) with SimpleOpCode {
@@ -379,6 +412,7 @@ object OpCode {
       stack.push(e4)
       true
     }
+    override def toString: String =  "OP_2ROT" +"("+this.code+")"
   }
 
   val OP_2SWAP = new OpCode(114) with SimpleOpCode {
@@ -391,6 +425,7 @@ object OpCode {
       stack.push(e2)
       true
     }
+    override def toString: String =  "OP_2SWAP" +"("+this.code+")"
   }
   val OP_IFDUP = new OpCode(115) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -400,12 +435,14 @@ object OpCode {
         stack.push(stack.peek())
       true
     }
+    override def toString: String =  "OP_IFDUP" +"("+this.code+")"
   }
   val OP_DEPTH = new OpCode(116) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       stack.push(encode(stack.size()))
       true
     }
+    override def toString: String =  "OP_DEPTH" +"("+this.code+")"
   }
   val OP_DROP = new OpCode(117) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -414,6 +451,7 @@ object OpCode {
       stack.pop()
       true
     }
+    override def toString: String =  "OP_DROP" +"("+this.code+")"
   }
   val OP_DUP = new OpCode(118) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -422,6 +460,7 @@ object OpCode {
       stack.push(stack.peek())
       true
     }
+    override def toString: String =  "OP_DUP" +"("+this.code+")"
   }
   val OP_NIP = new OpCode(119) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -430,6 +469,7 @@ object OpCode {
       stack.remove(1)
       true
     }
+    override def toString: String =  "OP_NIP" +"("+this.code+")"
   }
   val OP_OVER = new OpCode(120) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -438,6 +478,7 @@ object OpCode {
       stack.push(stack.get(1))
       true
     }
+    override def toString: String =  "OP_OVER" +"("+this.code+")"
   }
   val OP_PICK = new OpCode(121) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -451,6 +492,7 @@ object OpCode {
       stack.push(stack.get(n))
       true
     }
+    override def toString: String =  "OP_PICK" +"("+this.code+")"
   }
   val OP_ROLL = new OpCode(122) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -464,6 +506,7 @@ object OpCode {
       stack.push(stack.remove(n))
       true
     }
+    override def toString: String =  "OP_ROLL" +"("+this.code+")"
   }
   val OP_ROT = new OpCode(123) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -479,6 +522,7 @@ object OpCode {
       stack.push(e2)
       true
     }
+    override def toString: String =  "OP_ROT" +"("+this.code+")"
   }
   val OP_SWAP = new OpCode(124) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -491,6 +535,7 @@ object OpCode {
       stack.push(e1)
       true
     }
+    override def toString: String =  "OP_SWAP" +"("+this.code+")"
   }
   val OP_TUCK = new OpCode(125) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -501,22 +546,26 @@ object OpCode {
       stack.add(2, e0)
       true
     }
-
+    override def toString: String =  "OP_TUCK" +"("+this.code+")"
   }
 
 
   // splice ops
   val OP_CAT = new OpCode(126) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_CAT" +"("+this.code+")"
   }
   val OP_SUBSTR = new OpCode(127) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_SUBSTR" +"("+this.code+")"
   }
   val OP_LEFT = new OpCode(128) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_LEFT" +"("+this.code+")"
   }
   val OP_RIGHT = new OpCode(129) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_RIGHT" +"("+this.code+")"
   }
 
   val OP_SIZE = new OpCode(130) with SimpleOpCode {
@@ -526,20 +575,25 @@ object OpCode {
       stack.push(encode(stack.peek().length))
       true
     }
+    override def toString: String =  "OP_SIZE" +"("+this.code+")"
   }
 
   // bit logic
   val OP_INVERT = new OpCode(131) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_INVERT" +"("+this.code+")"
   }
   val OP_AND = new OpCode(132) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_AND" +"("+this.code+")"
   }
   val OP_OR = new OpCode(133) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_OR" +"("+this.code+")"
   }
   val OP_XOR = new OpCode(134) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_XOR" +"("+this.code+")"
   }
 
   val OP_EQUAL = new OpCode(135) with SimpleOpCode {
@@ -556,20 +610,24 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_EQUAL" +"("+this.code+")"
   }
 
   val OP_EQUALVERIFY = new OpCode(136) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       OpCode.OP_EQUAL.execute(stack) && OpCode.OP_VERIFY.execute(stack)
     }
+    override def toString: String =  "OP_EQUALVERIFY" +"("+this.code+")"
   }
 
   val OP_RESERVED1 = new OpCode(137) with SimpleOpCode{
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+    override def toString: String =  "OP_RESERVED1" +"("+this.code+")"
   }
 
   val OP_RESERVED2 = new OpCode(138) with SimpleOpCode{
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = false
+    override def toString: String =  "OP_RESERVED2" +"("+this.code+")"
   }
 
 
@@ -582,6 +640,7 @@ object OpCode {
       stack.push(encode(n + 1))
       true
     }
+    override def toString: String =  "OP_1ADD" +"("+this.code+")"
   }
 
   val OP_1SUB = new OpCode(140) with SimpleOpCode {
@@ -592,13 +651,16 @@ object OpCode {
       stack.push(encode(n - 1))
       true
     }
+    override def toString: String =  "OP_1SUB" +"("+this.code+")"
   }
 
   val OP_2MUL = new OpCode(141) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_2MUL" +"("+this.code+")"
   }
   val OP_2DIV = new OpCode(142) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_2DIV" +"("+this.code+")"
   }
 
   val OP_NEGATE = new OpCode(143) with SimpleOpCode {
@@ -610,6 +672,7 @@ object OpCode {
       stack.push(encode(-n))
       true
     }
+    override def toString: String =  "OP_NEGATE" +"("+this.code+")"
   }
   val OP_ABS = new OpCode(144) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -620,6 +683,7 @@ object OpCode {
       stack.push(encode(if (n < 0) -n else n))
       true
     }
+    override def toString: String =  "OP_ABS" +"("+this.code+")"
   }
   val OP_NOT = new OpCode(145) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -633,6 +697,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_NOT" +"("+this.code+")"
   }
   val OP_0NOTEQUAL = new OpCode(146) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -646,6 +711,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_0NOTEQUAL" +"("+this.code+")"
   }
   val OP_ADD = new OpCode(147) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -657,6 +723,7 @@ object OpCode {
       stack.push(encode(a + b))
       true
     }
+    override def toString: String =  "OP_ADD" +"("+this.code+")"
   }
 
   val OP_SUB = new OpCode(148) with SimpleOpCode {
@@ -669,22 +736,28 @@ object OpCode {
       stack.push(encode(a - b))
       true
     }
+    override def toString: String =  "OP_SUB" +"("+this.code+")"
   }
 
   val OP_MUL = new OpCode(149) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_MUL" +"("+this.code+")"
   }
   val OP_DIV = new OpCode(150) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_DIV" +"("+this.code+")"
   }
   val OP_MOD = new OpCode(151) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_MOD" +"("+this.code+")"
   }
   val OP_LSHIFT = new OpCode(152) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_LSHIFT" +"("+this.code+")"
   }
   val OP_RSHIFT = new OpCode(153) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = throw new NotImplementedError()
+    override def toString: String =  "OP_RSHIFT" +"("+this.code+")"
   }
 
   val OP_BOOLAND = new OpCode(154) with SimpleOpCode {
@@ -701,6 +774,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_BOOLAND" +"("+this.code+")"
   }
 
   val OP_BOOLOR = new OpCode(155) with SimpleOpCode {
@@ -717,6 +791,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_BOOLOR" +"("+this.code+")"
   }
 
   val OP_NUMEQUAL = new OpCode(156) with SimpleOpCode {
@@ -733,6 +808,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_NUMEQUAL" +"("+this.code+")"
   }
 
   val OP_NUMEQUALVERIFY = new OpCode(157) with SimpleOpCode {
@@ -740,6 +816,7 @@ object OpCode {
 
       OP_NUMEQUAL.execute(stack) && OP_VERIFY.execute(stack)
     }
+    override def toString: String =  "OP_NUMEQUALVERIFY" +"("+this.code+")"
   }
 
   val OP_NUMNOTEQUAL = new OpCode(158) with SimpleOpCode {
@@ -756,6 +833,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_NUMNOTEQUAL" +"("+this.code+")"
   }
 
   val OP_LESSTHAN = new OpCode(159) with SimpleOpCode {
@@ -772,6 +850,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_LESSTHAN" +"("+this.code+")"
   }
 
   val OP_GREATERTHAN = new OpCode(160) with SimpleOpCode {
@@ -788,6 +867,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_GREATERTHAN" +"("+this.code+")"
   }
 
   val OP_LESSTHANOREQUAL = new OpCode(161) with SimpleOpCode {
@@ -804,6 +884,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_LESSTHANOREQUAL" +"("+this.code+")"
   }
 
   val OP_GREATERTHANOREQUAL = new OpCode(162) with SimpleOpCode {
@@ -820,6 +901,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_GREATERTHANOREQUAL" +"("+this.code+")"
   }
 
   val OP_MIN = new OpCode(163) with SimpleOpCode {
@@ -836,6 +918,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_MIN" +"("+this.code+")"
   }
 
   val OP_MAX = new OpCode(164) with SimpleOpCode {
@@ -852,6 +935,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_MAX" +"("+this.code+")"
   }
 
   val OP_WITHIN = new OpCode(165) with SimpleOpCode {
@@ -869,6 +953,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_WITHIN" +"("+this.code+")"
   }
 
   val OP_RIPEMD160 = new OpCode(166) with SimpleOpCode {
@@ -881,6 +966,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_RIPEMD160" +"("+this.code+")"
   }
 
   val OP_SHA1 = new OpCode(167) with SimpleOpCode {
@@ -893,6 +979,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_SHA1" +"("+this.code+")"
   }
 
   val OP_SHA256 = new OpCode(168) with SimpleOpCode {
@@ -905,6 +992,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_SHA256" +"("+this.code+")"
   }
 
   val OP_HASH160 = new OpCode(169) with SimpleOpCode {
@@ -917,6 +1005,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_HASH160" +"("+this.code+")"
   }
   val OP_HASH256 = new OpCode(170) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
@@ -928,6 +1017,7 @@ object OpCode {
 
       true
     }
+    override def toString: String =  "OP_HASH256" +"("+this.code+")"
   }
 
   //TODO what here ?
@@ -935,6 +1025,7 @@ object OpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = {
       false
     }
+    override def toString: String =  "OP_CODESEPARATOR" +"("+this.code+")"
   }
 
   def OP_CHECKSIG = new OpCode(172) with SignableOpCode {
@@ -955,6 +1046,7 @@ object OpCode {
         stack.push(encode(0))
       true
     }
+    override def toString: String =  "OP_CHECKSIG" +"("+this.code+")"
   }
 
   val OP_CHECKSIGVERIFY = new OpCode(173) with SignableOpCode {
@@ -965,6 +1057,7 @@ object OpCode {
 
       OP_CHECKSIG.execute(stack, z) && OP_VERIFY.execute(stack)
     }
+    override def toString: String =  "OP_CHECKSIGVERIFY" +"("+this.code+")"
   }
 
   val OP_CHECKMULTISIG = new OpCode(174) with SignableOpCode {
@@ -1007,6 +1100,7 @@ object OpCode {
       return false
 
     }
+    override def toString: String =  "OP_CHECKMULTISIG" +"("+this.code+")"
   }
 
   val OP_CHECKMULTISIGVERIFY = new OpCode(175) with SignableOpCode {
@@ -1016,38 +1110,46 @@ object OpCode {
 
       OP_CHECKMULTISIG.execute(stack, z) && OP_VERIFY.execute(stack)
     }
+    override def toString: String =  "OP_CHECKMULTISIGVERIFY" +"("+this.code+")"
   }
 
   val OP_NOP1 = new OpCode(176) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP1" +"("+this.code+")"
   }
 
   val OP_NOP4 = new OpCode(179) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP4" +"("+this.code+")"
   }
 
   val OP_NOP5 = new OpCode(180) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP5" +"("+this.code+")"
   }
 
   val OP_NOP6 = new OpCode(181) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP6" +"("+this.code+")"
   }
 
   val OP_NOP7 = new OpCode(182) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP7" +"("+this.code+")"
   }
 
   val OP_NOP8 = new OpCode(183) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP8" +"("+this.code+")"
   }
 
   val OP_NOP9 = new OpCode(184) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP9" +"("+this.code+")"
   }
 
   val OP_NOP10 = new OpCode(185) with SimpleOpCode {
     override def execute(stack: util.LinkedList[Array[Byte]]): Boolean = true
+    override def toString: String =  "OP_NOP10" +"("+this.code+")"
   }
 }
-

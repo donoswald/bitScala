@@ -925,4 +925,9 @@ class OpCodeSpec extends UnitSpec {
     assert(OpCode.decode(stack.get(0)) == 1)
 
   }
+
+  it should "tostring" in{
+
+    OpCode.map.foreach(e=> println(e._2))
+  }
 }

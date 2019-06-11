@@ -27,4 +27,9 @@ object ScriptElement {
     new ScriptElement(Some(opcode), arr)
   }
 
+  override def toString: String = {
+
+    return null
+  }
+
 }
