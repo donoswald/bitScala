@@ -1076,7 +1076,7 @@ object OpCode {
       }
 
       val m = decode(stack.pop()).toInt
-      if (stack.size() < m + 1)
+      if (stack.size() < m)
         return false
 
       val signatures = ListBuffer[Array[Byte]]()
@@ -1085,7 +1085,10 @@ object OpCode {
         signatures.+=(sig.slice(0, sig.length - 1))
       }
 
-      stack.pop()
+      //Off by one bug
+      if (stack.size() > 0 && decode(stack.getFirst) == 0) {
+        stack.pop()
+      }
 
       val points = pks.map(sec => S256Point.parse(sec))
       val sigs = signatures.map(der => Signature.parse(der))

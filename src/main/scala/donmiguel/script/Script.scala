@@ -21,6 +21,15 @@ case class Script(elems: List[ScriptElement] = List.empty) {
     new script.Script(other.elems.++(this.elems))
   }
 
+  override def toString: String = {
+    var buf = new ListBuffer[String]
+    for(e<- elems){
+      buf+=e.toString
+    }
+
+    buf.mkString("\n")
+  }
+
   def evaluate(z: Array[Byte]): Boolean = {
 
     var stack = new util.LinkedList[Array[Byte]]()
@@ -80,6 +89,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
         val h160 = elems.remove(0)
         elems.remove(0) // opEqual
 
+        val redeem_raw =  stack.getFirst
         if (!OpCode.OP_HASH160.execute(stack)) {
           return false
         }
@@ -89,6 +99,12 @@ case class Script(elems: List[ScriptElement] = List.empty) {
         }
         if(!OpCode.OP_VERIFY.execute(stack)){
           return false
+        }
+        val redeem_encoded = Array.concat(VarInt.toVarint(redeem_raw.length), redeem_raw)
+        val redeem_script = Script.parse(redeem_encoded.iterator)
+
+        for(redeem_elem<- redeem_script.elems){
+          elems.+=(redeem_elem)
         }
       }
 
@@ -225,6 +241,4 @@ object Script {
 
     new Script(cmds.toList)
   }
-
-
 }
