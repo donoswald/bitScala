@@ -1,5 +1,33 @@
 package donmiguel.util
 
+import donmiguel.util.VarInt.sizeOf
+
+class VarInt(val value: Long){
+  def serialize(): Array[Byte] = {
+    var bytes: Array[Byte] = null
+    sizeOf(value) match {
+      case 1 =>
+        Array[Byte](value.byteValue())
+      case 3 =>
+        bytes = new Array[Byte](3)
+        bytes(0) = 253.toByte
+        LeConverter.writeLE(value.longValue(), bytes, 1)
+        bytes
+      case 5 =>
+        bytes = new Array[Byte](5)
+        bytes(0) = 254.toByte
+        LeConverter.writeLE(value.longValue(), bytes, 1)
+        bytes
+      case _ =>
+        bytes = new Array[Byte](9)
+        bytes(0) = 255.toByte
+        LeConverter.writeLE(value.longValue(), bytes, 1)
+        bytes
+    }
+  }
+}
+
+
 
 /**
   *Implementation of Varint as described by
@@ -7,6 +35,33 @@ package donmiguel.util
   * @see https://learnmeabitcoin.com/glossary/varint
   */
 object VarInt {
+  def parse(it: Iterator[Byte]): VarInt = {
+    val first = 0xFF & it.next()
+    var value = 0L
+
+    if (first < 253) {
+      value = first
+    } else if (first == 253) {
+      var buf = new Array[Byte](3)
+      buf(0) = first.asInstanceOf[Byte]
+      it.copyToArray(buf, 1, 2)
+      value = LeConverter.readLongLE(buf, 1)
+    }
+    else if (first == 254) {
+      var buf = new Array[Byte](5)
+      buf(0) = first.asInstanceOf[Byte]
+      it.copyToArray(buf, 1, 4)
+      value = LeConverter.readLongLE(buf, 1)
+    }
+    else {
+      var buf = new Array[Byte](9)
+      buf(0) = first.asInstanceOf[Byte]
+      it.copyToArray(buf, 1, 8)
+      value = LeConverter.readLongLE(buf, 1)
+    }
+    new VarInt(value)
+  }
+
 
   def fromVarint(it: Iterator[Byte]): Long = {
     val first = 0xFF & it.next()

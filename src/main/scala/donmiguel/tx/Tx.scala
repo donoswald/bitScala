@@ -5,7 +5,7 @@ import java.nio.{ByteBuffer, ByteOrder}
 import donmiguel.script.{Script, ScriptElement}
 import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
-case class Tx(version: Int, numInputs: Long, ins: Array[TxIn], num_outs: Long, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
+case class Tx(version: Int, val numInputs:VarInt, ins: Array[TxIn], num_outs: VarInt, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
   def fee: Long = {
 
     var sumIn: Long = 0
@@ -27,12 +27,12 @@ case class Tx(version: Int, numInputs: Long, ins: Array[TxIn], num_outs: Long, o
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(this.version)
       .order(ByteOrder.BIG_ENDIAN)
-      .put(VarInt.toVarint(this.ins.length))
+      .put(new VarInt(this.ins.length).serialize())
     for (txIn <- ins) {
       bb.put(txIn.serialize)
     }
 
-    bb.put(VarInt.toVarint(this.outs.length))
+    bb.put(new VarInt(this.outs.length).serialize())
     for (txOut <- outs) {
       bb.put(txOut.serialize)
     }
@@ -46,7 +46,7 @@ case class Tx(version: Int, numInputs: Long, ins: Array[TxIn], num_outs: Long, o
       .order(ByteOrder.LITTLE_ENDIAN)
       .putInt(version)
       .order(ByteOrder.BIG_ENDIAN)
-      .put(VarInt.toVarint(this.ins.length))
+      .put(new VarInt(this.ins.length).serialize())
 
     for (i <- 0 until this.ins.length) {
       val txIn = this.ins(i)
@@ -65,7 +65,7 @@ case class Tx(version: Int, numInputs: Long, ins: Array[TxIn], num_outs: Long, o
       ).serialize)
 
     }
-    bb.put(VarInt.toVarint(this.outs.length))
+    bb.put(new VarInt(this.outs.length).serialize())
     for (txOut <- outs) {
       bb.put(txOut.serialize)
     }
@@ -86,7 +86,7 @@ case class Tx(version: Int, numInputs: Long, ins: Array[TxIn], num_outs: Long, o
     var redeem_script: Option[Script] = None
     if (Script.isP2shScriptPubkey(script_pub.elems)) {
       val elem = txIn.scriptSig.elems.last
-      val raw_redeem = Array.concat(VarInt.toVarint(elem.data.length), elem.data)
+      val raw_redeem = Array.concat(new VarInt(elem.data.length).serialize(), elem.data)
       redeem_script = Some(Script.parse(raw_redeem.iterator))
     }
 
@@ -146,16 +146,16 @@ object Tx {
   def parse(it: Iterator[Byte]): Tx = {
 
     var version = LeConverter.readLongLE(it, 4).asInstanceOf[Int]
-    var num_in = VarInt.fromVarint(it)
+    var num_in = VarInt.parse(it)
 
-    var ins = new Array[TxIn](num_in.toInt)
-    for (i <- 0 until num_in.toInt) {
+    var ins = new Array[TxIn](num_in.value.asInstanceOf[Int])
+    for (i <- 0 until num_in.value.asInstanceOf[Int]) {
       ins(i) = TxIn.parse(it)
     }
 
-    var num_out = VarInt.fromVarint(it)
-    var outs = new Array[TxOut](num_out.toInt)
-    for (i <- 0 until num_out.toInt) {
+    var num_out = VarInt.parse(it)
+    var outs = new Array[TxOut](num_out.value.asInstanceOf[Int])
+    for (i <- 0 until num_out.value.asInstanceOf[Int]) {
       outs(i) = TxOut.parse(it)
     }
 
