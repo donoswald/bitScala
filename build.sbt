@@ -8,3 +8,5 @@ libraryDependencies += "org.scalactic" %% "scalactic" % "3.0.5"
 libraryDependencies += "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 libraryDependencies += "org.bouncycastle" % "bcprov-jdk15on" % "1.61"
 libraryDependencies += "com.typesafe.play" %% "play-json" % "2.7.3"
+libraryDependencies += "net.java.dev.jna" % "jna-platform" % "4.5.0"
+

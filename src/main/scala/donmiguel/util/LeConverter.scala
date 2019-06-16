@@ -1,5 +1,7 @@
 package donmiguel.util
 
+import com.sun.jna.platform.win32.WinDef.UINT
+
 object LeConverter {
 
 
