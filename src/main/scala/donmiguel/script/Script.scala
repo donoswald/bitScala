@@ -14,7 +14,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
     var arr = this.raw_serialize
     var total = arr.length
 
-    Array.concat(VarInt.toVarint(total), arr)
+    Array.concat(new VarInt(total).serialize(), arr)
   }
 
   def +(other: Script): Script = {
@@ -100,7 +100,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
         if(!OpCode.OP_VERIFY.execute(stack)){
           return false
         }
-        val redeem_encoded = Array.concat(VarInt.toVarint(redeem_raw.length), redeem_raw)
+        val redeem_encoded = Array.concat(new VarInt(redeem_raw.length).serialize(), redeem_raw)
         val redeem_script = Script.parse(redeem_encoded.iterator)
 
         for(redeem_elem<- redeem_script.elems){
@@ -109,7 +109,6 @@ case class Script(elems: List[ScriptElement] = List.empty) {
       }
 
     }
-
 
     if (stack.size() == 0)
       return false
@@ -198,7 +197,7 @@ object Script {
   def parse(it: Iterator[Byte]): Script = {
 
 
-    var length = VarInt.fromVarint(it)
+    var length = VarInt.parse(it).value
     var count = 0
     var cmds = ListBuffer[ScriptElement]()
 
