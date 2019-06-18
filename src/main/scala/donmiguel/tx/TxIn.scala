@@ -6,7 +6,7 @@ import com.sun.jna.platform.win32.WinDef.UINT
 import donmiguel.script.Script
 import donmiguel.util.{CryptoUtil, LeConverter}
 
-case class TxIn(prevTx: String, prevIdx: UINT, var scriptSig: Script = new Script(), sequence: Long = 0xffffffff) {
+case class TxIn(prevTx: String, prevIdx: UINT, var scriptSig: Script = new Script(), sequence:UINT = new UINT(0xffffffff)  ) {
 
   def value: Long = {
     var tx = TxFetcher.cache(prevTx)
@@ -26,7 +26,7 @@ case class TxIn(prevTx: String, prevIdx: UINT, var scriptSig: Script = new Scrip
       .order(ByteOrder.BIG_ENDIAN)
       .put(this.scriptSig.serialize)
       .order(ByteOrder.LITTLE_ENDIAN)
-      .putInt(this.sequence.toInt)
+      .putInt(this.sequence.intValue())
       .order(ByteOrder.BIG_ENDIAN)
 
     return bb.array().slice(0, bb.position())
@@ -42,7 +42,8 @@ object TxIn {
 
     val script = Script.parse(it)
 
-    val sequence = LeConverter.readLongLE(it, 4)
+    val sequence = new UINT(LeConverter.readLongLE(it, 4))
+
     new TxIn(txPrev, prevIdx, script, sequence)
 
   }
