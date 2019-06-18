@@ -125,7 +125,7 @@ case class Tx(version: UINT, val numInputs:VarInt, ins: Array[TxIn], num_outs: V
       return false
     if (this.ins(0).prevTx != CryptoUtil.bytesToHex(Array.ofDim(32)))
       return false
-    if (this.ins(0).prevIdx != 0xffffffff)
+    if (this.ins(0).prevIdx.intValue() != 0xffffffff)
       return false
     true
   }

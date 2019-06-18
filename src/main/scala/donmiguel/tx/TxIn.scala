@@ -2,26 +2,27 @@ package donmiguel.tx
 
 import java.nio.{ByteBuffer, ByteOrder}
 
+import com.sun.jna.platform.win32.WinDef.UINT
 import donmiguel.script.Script
 import donmiguel.util.{CryptoUtil, LeConverter}
 
-case class TxIn(prevTx: String, prevIdx: Int, var scriptSig: Script = new Script(), sequence: Long = 0xffffffff) {
+case class TxIn(prevTx: String, prevIdx: UINT, var scriptSig: Script = new Script(), sequence: Long = 0xffffffff) {
 
   def value: Long = {
     var tx = TxFetcher.cache(prevTx)
-    tx.outs(prevIdx).amount
+    tx.outs(prevIdx.intValue()).amount
   }
 
   def scriptPubkey: Script = {
     var tx = TxFetcher.cache(prevTx)
-    tx.outs(prevIdx).scriptPubkey
+    tx.outs(prevIdx.intValue()).scriptPubkey
   }
 
   def serialize: Array[Byte] = {
     var bb = ByteBuffer.allocate(999999999)
       .put(CryptoUtil.hexToBytes(this.prevTx).reverse)
       .order(ByteOrder.LITTLE_ENDIAN)
-      .putInt(prevIdx)
+      .putInt(prevIdx.intValue())
       .order(ByteOrder.BIG_ENDIAN)
       .put(this.scriptSig.serialize)
       .order(ByteOrder.LITTLE_ENDIAN)
@@ -37,7 +38,7 @@ object TxIn {
   def parse(it: Iterator[Byte]): TxIn = {
 
     val txPrev = CryptoUtil.bytesToHex(LeConverter.readByteArrayLE(it, 32, 0))
-    val prevIdx = LeConverter.readLongLE(it, 4).toInt
+    val prevIdx = new UINT(LeConverter.readLongLE(it, 4))
 
     val script = Script.parse(it)
 

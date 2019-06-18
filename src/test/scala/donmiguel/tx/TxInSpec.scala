@@ -1,5 +1,6 @@
 package donmiguel.tx
 
+import com.sun.jna.platform.win32.WinDef.UINT
 import donmiguel.UnitSpec
 import donmiguel.util.CryptoUtil
 
@@ -10,7 +11,7 @@ class TxInSpec extends UnitSpec {
 
     var txIn = TxIn.parse(CryptoUtil.hexToBytes(raw).iterator)
 
-    assert(txIn.prevIdx == 0)
+    assert(txIn.prevIdx.intValue() == 0)
     assert(txIn.prevTx == "d1c789a9c60383bf715f3f6ad9d14b91fe55f3deb369fe5d9280cb1a01793f81")
 
   }
@@ -34,14 +35,14 @@ class TxInSpec extends UnitSpec {
   it should "input value" in {
     val fetcher = TxFetcher.load("tx.cache")
 
-    var txIn = TxIn("d1c789a9c60383bf715f3f6ad9d14b91fe55f3deb369fe5d9280cb1a01793f81", 0)
+    var txIn = TxIn("d1c789a9c60383bf715f3f6ad9d14b91fe55f3deb369fe5d9280cb1a01793f81", new UINT())
     assert(txIn.value == 42505594)
   }
 
   it should "pub_key" in {
     val fetcher = TxFetcher.load("tx.cache")
 
-    var txIn = TxIn("d1c789a9c60383bf715f3f6ad9d14b91fe55f3deb369fe5d9280cb1a01793f81", 0)
+    var txIn = TxIn("d1c789a9c60383bf715f3f6ad9d14b91fe55f3deb369fe5d9280cb1a01793f81", new UINT())
     assert(txIn.scriptPubkey.serialize.deep == CryptoUtil.hexToBytes("1976a914a802fc56c704ce87c42d7c92eb75e7896bdc41ae88ac").deep)
   }
 
