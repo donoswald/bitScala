@@ -6,7 +6,7 @@ import com.sun.jna.platform.win32.WinDef.UINT
 import donmiguel.script.{Script, ScriptElement}
 import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
-case class Tx(version: UINT, val numInputs:VarInt, ins: Array[TxIn], num_outs: VarInt, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
+case class Tx(version: UINT, val numInputs:VarInt, ins: Array[TxIn], num_outs: VarInt, outs: Array[TxOut], locktime: UINT, testnet: Boolean = false) {
   def fee: Long = {
 
     var sumIn: Long = 0
@@ -38,7 +38,7 @@ case class Tx(version: UINT, val numInputs:VarInt, ins: Array[TxIn], num_outs: V
       bb.put(txOut.serialize)
     }
     bb.order(ByteOrder.LITTLE_ENDIAN)
-    bb.putInt(this.locktime)
+    bb.putInt(this.locktime.intValue())
     bb.array().slice(0, bb.position())
   }
 
@@ -72,7 +72,7 @@ case class Tx(version: UINT, val numInputs:VarInt, ins: Array[TxIn], num_outs: V
     }
 
     bb.order(ByteOrder.LITTLE_ENDIAN)
-    bb.putInt(this.locktime)
+    bb.putInt(this.locktime.intValue())
     bb.putInt(CryptoUtil.SIGHASH_ALL)
 
     val s = bb.array().slice(0, bb.position())
@@ -160,7 +160,7 @@ object Tx {
       outs(i) = TxOut.parse(it)
     }
 
-    var locktime = LeConverter.readLongLE(it, 4).toInt
+    var locktime = new UINT(LeConverter.readLongLE(it, 4))
     new Tx(version, num_in, ins, num_out, outs, locktime)
   }
 }
