@@ -10,7 +10,7 @@ case class TxIn(prevTx: String, prevIdx: UINT, var scriptSig: Script = new Scrip
 
   def value: Long = {
     var tx = TxFetcher.cache(prevTx)
-    tx.outs(prevIdx.intValue()).amount
+    tx.outs(prevIdx.intValue()).amount.longValue()
   }
 
   def scriptPubkey: Script = {

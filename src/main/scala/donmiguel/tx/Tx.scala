@@ -17,7 +17,7 @@ case class Tx(version: UINT, val numInputs:VarInt, ins: Array[TxIn], num_outs: V
     }
 
     for (out <- outs) {
-      sumOut += out.amount
+      sumOut += out.amount.longValue()
     }
 
     return sumIn - sumOut

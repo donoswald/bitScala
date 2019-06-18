@@ -2,10 +2,11 @@ package donmiguel.tx
 
 import java.nio.{ByteBuffer, ByteOrder}
 
+import com.sun.jna.platform.win32.WinDef.ULONG
 import donmiguel.script.Script
 import donmiguel.util.LeConverter
 
-case class TxOut(amount: Long, scriptPubkey: Script) {
+case class TxOut(amount: ULONG, scriptPubkey: Script) {
   def serialize: Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
@@ -20,7 +21,7 @@ object TxOut {
 
   def parse(it: Iterator[Byte]): TxOut = {
 
-    var amount = LeConverter.readLongLE(it, 8)
+    var amount = new ULONG(LeConverter.readLongLE(it, 8))
     var script = Script.parse(it)
 
     new TxOut(amount, script)

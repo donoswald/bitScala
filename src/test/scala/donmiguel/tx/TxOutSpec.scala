@@ -11,7 +11,7 @@ class TxOutSpec extends UnitSpec {
 
     var txOut = TxOut.parse(CryptoUtil.hexToBytes(raw).iterator)
 
-    assert(txOut.amount == 32454049)
+    assert(txOut.amount.longValue() == 32454049)
   }
 
   it should "parse script sig" in {
@@ -20,10 +20,10 @@ class TxOutSpec extends UnitSpec {
 
     assert(tx.outs.length == 2)
 
-    assert(tx.outs(0).amount == 32454049)
+    assert(tx.outs(0).amount.longValue() == 32454049)
     assert(tx.outs(0).scriptPubkey.serialize.deep == CryptoUtil.hexToBytes("1976a914bc3b654dca7e56b04dca18f2566cdaf02e8d9ada88ac").deep)
 
-    assert(tx.outs(1).amount == 10011545)
+    assert(tx.outs(1).amount.longValue() == 10011545)
     assert(tx.outs(1).scriptPubkey.serialize.deep == CryptoUtil.hexToBytes("1976a9141c4bc762dd5423e332166702cb75f40df79fea1288ac").deep)
 
   }
