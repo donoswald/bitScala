@@ -2,10 +2,11 @@ package donmiguel.tx
 
 import java.nio.{ByteBuffer, ByteOrder}
 
+import com.sun.jna.platform.win32.WinDef.UINT
 import donmiguel.script.{Script, ScriptElement}
 import donmiguel.util.{CryptoUtil, LeConverter, VarInt}
 
-case class Tx(version: Int, val numInputs:VarInt, ins: Array[TxIn], num_outs: VarInt, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
+case class Tx(version: UINT, val numInputs:VarInt, ins: Array[TxIn], num_outs: VarInt, outs: Array[TxOut], locktime: Int, testnet: Boolean = false) {
   def fee: Long = {
 
     var sumIn: Long = 0
@@ -25,7 +26,7 @@ case class Tx(version: Int, val numInputs:VarInt, ins: Array[TxIn], num_outs: Va
   def serialize: Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
-      .putInt(this.version)
+      .putInt(this.version.intValue())
       .order(ByteOrder.BIG_ENDIAN)
       .put(new VarInt(this.ins.length).serialize())
     for (txIn <- ins) {
@@ -44,7 +45,7 @@ case class Tx(version: Int, val numInputs:VarInt, ins: Array[TxIn], num_outs: Va
   def sigHash(inputIdx: Int, redeemScript: Option[Script] = Option.empty): Array[Byte] = {
     val bb = ByteBuffer.allocate(999999999)
       .order(ByteOrder.LITTLE_ENDIAN)
-      .putInt(version)
+      .putInt(version.intValue())
       .order(ByteOrder.BIG_ENDIAN)
       .put(new VarInt(this.ins.length).serialize())
 
@@ -145,7 +146,7 @@ case class Tx(version: Int, val numInputs:VarInt, ins: Array[TxIn], num_outs: Va
 object Tx {
   def parse(it: Iterator[Byte]): Tx = {
 
-    var version = LeConverter.readLongLE(it, 4).asInstanceOf[Int]
+    var version = new UINT(LeConverter.readLongLE(it, 4))
     var num_in = VarInt.parse(it)
 
     var ins = new Array[TxIn](num_in.value.asInstanceOf[Int])
