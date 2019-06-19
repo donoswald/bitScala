@@ -60,7 +60,7 @@ case class Script(elems: List[ScriptElement] = List.empty) {
 
     while (elems.nonEmpty) {
 
-      Option.apply(elems.remove(0))
+      Option(elems.remove(0))
         .filter(e => filterDataElems(e))
         .map(e => OpCode.map(e.opcode.get))
         .filter(op => checkIfStatement(op))

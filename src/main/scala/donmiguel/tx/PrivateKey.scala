@@ -20,7 +20,7 @@ class PrivateKey(val privKey: BigInt) {
     signer.init(true, privKeyParams)
     val sigs = signer.generateSignature(hash)
 
-    new Signature(BigInt.apply(sigs(0)), BigInt.apply(sigs(1)))
+    new Signature(BigInt(sigs(0)), BigInt(sigs(1)))
   }
 
   def wif(compressed: Boolean, testnet: Boolean): String = {

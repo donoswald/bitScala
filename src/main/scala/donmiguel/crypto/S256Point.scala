@@ -81,11 +81,11 @@ object S256Point {
       case 0x04 => {
         require(arr.length == 65)
 
-        var x = BigInt.apply(1, xarr)
+        var x = BigInt(1, xarr)
 
         var yarr = Array.ofDim[Byte](32)
         Array.copy(arr, 33, yarr, 0, 32)
-        var y = BigInt.apply(1, yarr)
+        var y = BigInt(1, yarr)
 
         return new S256Point(new S256Element(x), new S256Element(y))
       }
@@ -93,7 +93,7 @@ object S256Point {
         require(arr.length == 33)
         var even = arr(0) == 0x02
 
-        var x = new S256Element(BigInt.apply(1, xarr))
+        var x = new S256Element(BigInt(1, xarr))
         var alpha = (x ** 3 + new S256Element(Secp256k1.B)).asInstanceOf[S256Element]
         var beta = alpha.sqrt()
 

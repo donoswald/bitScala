@@ -35,6 +35,12 @@ class Block(val version: UINT, val prevBlock: String, val merkleRoot: String, va
   def bip141(): Boolean = {
     (this.version.intValue() >> 1 & 1) == 1
   }
+
+  def target(): BigInt = {
+    val exponent = this.bits.last
+    val coefficient = LeConverter.readLongLE(bits.slice(0, 3), 0)
+    BigInt(coefficient) * BigInt(256).pow(exponent - 3)
+  }
 }
 
 object Block {

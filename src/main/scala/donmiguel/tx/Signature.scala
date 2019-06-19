@@ -46,12 +46,12 @@ object Signature {
     if (nextByte(it) != Signature.marker(0)) {
       throw new RuntimeException("expected marker byte")
     }
-    var r = BigInt.apply(1, nextBytes(it, nextByte(it)))
+    var r = BigInt(1, nextBytes(it, nextByte(it)))
 
     if (nextByte(it) != marker(0)) {
       throw new RuntimeException("expected marker byte")
     }
-    var s = BigInt.apply(1, nextBytes(it, nextByte(it)))
+    var s = BigInt(1, nextBytes(it, nextByte(it)))
 
     return new Signature(r, s)
 

@@ -65,7 +65,7 @@ class Point(val x: Element, val y: Element, val a: Element, val b: Element) {
       var x = s ** 2 - this.x - that.x
       var y = s * (this.x - x) - this.y
 
-      Option.apply(x)
+      Option(x)
       return new Point(x, y, this.a, this.b)
     }
 
