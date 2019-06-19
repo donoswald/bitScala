@@ -41,6 +41,17 @@ class Block(val version: UINT, val prevBlock: String, val merkleRoot: String, va
     val coefficient = LeConverter.readLongLE(bits.slice(0, 3), 0)
     BigInt(coefficient) * BigInt(256).pow(exponent - 3)
   }
+
+  def difficulty(): BigInt = {
+    val lowest = BigInt(0xffff) * BigInt(256).pow(BigInt(0x1d).intValue() - 3)
+    lowest / target()
+  }
+
+  def checkPOW(): Boolean = {
+    val sha = CryptoUtil.doubleSha256(serialize())
+    val proof = BigInt(sha.reverse)
+    proof < target()
+  }
 }
 
 object Block {
